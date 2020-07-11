@@ -246,7 +246,7 @@
         // var dirEntry = cordova.file.applicationDirectory;
         function onLoad() {
             document.addEventListener("deviceready", onDeviceReady, false);
-            getDateData();
+            
         }
         $(document).ready(onDeviceReady);
 
@@ -264,6 +264,7 @@
             });
             document.getElementById("pilihTanggal").addEventListener("change", getTimeData, false);
             document.getElementById("pilihWaktu").addEventListener("change", getTableData, false);
+            getDateData();
             // $("select[name=pilihTanggal]").change(getTimeData);
             // $("select[name=pilihWaktu]").change(getTableData);
         }

@@ -128,16 +128,15 @@ var app = {
     loadStatus: () => loadStatus(),
     createdBy: operator_start.created_by,
     change_ritase: function () {
-        if (app.on_time_reset_ritase) {
-            ritase_sebelum = ritase_sekarang;
-            ritase_sekarang = 0;
-            document.getElementById("ritase_sebelum").innerText = ritase_sebelum;
-            document.getElementById("ritase_sekarang").innerText = ritase_sekarang;
-            actual_productivity_unit = parseFloat(0);
-            reset_ritase = '';
-            app.on_time_reset_ritase = false;
-            app._actual_productivity_();
-        }
+        ritase_sebelum = ritase_sekarang;
+        ritase_sekarang = 0;
+        document.getElementById("ritase_sebelum").innerText = ritase_sebelum;
+        document.getElementById("ritase_sekarang").innerText = ritase_sekarang;
+        actual_productivity_unit = parseFloat(0);
+        reset_ritase = '';
+        app.on_time_reset_ritase = false;
+        app._actual_productivity_();
+        muatanPerJam = 0;
     },
     setActualProductivity: () => app._actual_productivity_(),
     initialize_engine: function () {
@@ -289,7 +288,7 @@ function startTime() {
             ACCUMULATIVELoading();
         }
         // CLEAR ACCUMULATIVE LOADING TIMER
-        muatanPerJam = 0;
+
         t2 = setTimeout(startTime, 1000);
     }
     app._all_productivity_();
@@ -1022,13 +1021,13 @@ function submitting(segmen, keterangan) {
     var dataEngineStorage = JSON.parse(localStorage.dataEngine);
     dataInsert = dataEngineStorage;
 
-    if (app.on_time_reset_ritase) {
-        setTimeout(app.change_ritase, 1000);
-    }
     if (app.NetworkState() !== Connection.NONE) {
         $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
     } else {
         console.log("DATA STORED IN LOCAL");
+    }
+    if (app.on_time_reset_ritase) {
+        setTimeout(app.change_ritase, 1000);
     }
 }
 

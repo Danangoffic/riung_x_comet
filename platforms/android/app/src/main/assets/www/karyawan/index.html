@@ -127,14 +127,7 @@
     <script>
         window.addEventListener('load', onLoad, false);
         function onLoad() {
-            channel.bind('my-event', function (data) {
-                getDateNew();
-            });
-            getDateNew();
-            var PT = document.getElementById("pilihTanggal");
-            var PJ = document.getElementById("pilihJam");
-            PT.addEventListener("change", grafik1, false);
-            PJ.addEventListener("change", getHorizontalChart, false);
+
             document.addEventListener("deviceready", onDeviceReady, false);
             // $("[name=pilihTanggal").change(grafik1);
             // $("select[name=pilihJam]").change(getHorizontalChart);
@@ -145,13 +138,22 @@
         // device APIs are available
         //
         function onDeviceReady() {
-
+            channel.bind('my-event', function (data) {
+                getDateNew();
+            });
+            getDateNew();
+            var PT = document.getElementById("pilihTanggal");
+            var PJ = document.getElementById("pilihJam");
+            PT.addEventListener("change", grafik1, false);
+            PJ.addEventListener("change", getHorizontalChart, false);
             document.addEventListener("pause", onPause, false);
             document.addEventListener("resume", onResume, false);
             document.addEventListener("menubutton", onMenuKeyDown, false);
             // $(".submit").click(submitting());
             // Add similar listeners for other events
         }
+
+        $(document).ready(onDeviceReady);
 
         function onPause() {
 
@@ -180,10 +182,10 @@
                     if (e.response == "success") {
                         var data = e.data;
                         var option = "";
-                        
+
                         $.each(data, function (i, isi) {
-                            var selected = (isi.tanggal==PT.value) ? "selected" : '';
-                            option += "<option value='" + isi.tanggal + "' label='" + isi.tanggal + "' "+selected+">"+isi.tanggal+"</option>";
+                            var selected = (isi.tanggal == PT.value) ? "selected" : '';
+                            option += "<option value='" + isi.tanggal + "' label='" + isi.tanggal + "' " + selected + ">" + isi.tanggal + "</option>";
                         });
                         PT.innerHTML = option;
                         // $("#pilihTanggal").html(option);
@@ -497,8 +499,8 @@
                         var shift = document.getElementById("pilihShift");
                         if (data.length > 0) {
                             $.each(data, function (k, v) {
-                                var selected = (v.shift==shift.value) ? "selected" : '';
-                                optionShift += '<option value="' + v.shift + '" '+selected+'>' + v.shift + '</option>';
+                                var selected = (v.shift == shift.value) ? "selected" : '';
+                                optionShift += '<option value="' + v.shift + '" ' + selected + '>' + v.shift + '</option>';
                             });
                             shift.innerHTML = optionShift;
                         }
@@ -591,8 +593,8 @@
                     var data = e.data;
                     var option = "";
                     $.each(data, function (e, isi) {
-                        var selected = (isi.timeformat==tanggal) ? "selected" : '';
-                        option += "<option value='" + isi.timeformat + "' label='" + isi.timeformat + "' "+selected+">" + isi.timeformat + "</option>";
+                        var selected = (isi.timeformat == tanggal) ? "selected" : '';
+                        option += "<option value='" + isi.timeformat + "' label='" + isi.timeformat + "' " + selected + ">" + isi.timeformat + "</option>";
                     });
                     document.getElementById("pilihJam").innerHTML = option;
                     // $("#pilihJam").html(option);
