@@ -21,12 +21,12 @@
         <param name="onload" value="true" />
     </feature>
     <allow-navigation href="cdvfile:*" />
-    <name>Monitoring</name>
+    <name>RIUNG X-COMET EXCAVATOR CONTROL METER</name>
     <description>
-        A sample Apache Cordova application that responds to the deviceready event.
+        RIUNG X-COMET EXCAVATOR CONTROL METER
     </description>
-    <author email="dev@cordova.apache.org" href="http://cordova.io">
-        Apache Cordova Team
+    <author email="darifrahmanda@gmail.com" href="http://instagram.com/danangoffic">
+        Freelance Team
     </author>
     <content src="login/index.html" />
     <access origin="*" />
