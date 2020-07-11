@@ -70,6 +70,10 @@ var app = {
         document.getElementById("btn-engine-control").addEventListener("click", this.controlEngine, false);
         document.getElementById("selesai-kerja").addEventListener("click", FinalDone, false);
 
+        // call everything first
+        app.start_everyting_first_here();
+    },
+    start_everyting_first_here: function(){
         app.startTime();
         app.loadMaterial();
         app.loadActivity();
@@ -878,7 +882,6 @@ function kodeStatusFalse() {
 function loadMaterial() {
     $.ajax({
         url: url + "Material/get_all",
-        async: false,
         dataType: "JSON",
         success: function (e) {
             if (e.response == "success") {
@@ -973,7 +976,7 @@ function loadStatus() {
 function submitting(segmen, keterangan) {
     console.log("SEGMEN: " + segmen);
 
-    // var reset_ritase = '';
+    // check segmen to send if it's reset ritase
     if (segmen == "Reset Ritase") {
         reset_ritase = segmen;
         segmen = (localStorage.segmen == "Muatan") ? "Aktifitas" : localStorage.segmen;
@@ -1021,11 +1024,13 @@ function submitting(segmen, keterangan) {
     var dataEngineStorage = JSON.parse(localStorage.dataEngine);
     dataInsert = dataEngineStorage;
 
+    // check connection to submit data
     if (app.NetworkState() !== Connection.NONE) {
         $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
     } else {
         console.log("DATA STORED IN LOCAL");
     }
+    // here we go to reset hourly things
     if (app.on_time_reset_ritase) {
         setTimeout(app.change_ritase, 1000);
     }
