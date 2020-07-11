@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="generator" content="">
+    <title>Operator</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <meta name="theme-color" content="#0050a1">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <!-- <link href="signin.css" rel="stylesheet"> -->
+    <style>
+        .btn-no-padd {
+            padding: 0 !important;
+        }
+
+        .card-header {
+            padding: 0.4rem
+        }
+
+        .card-body {
+            padding: 0.2rem;
+        }
+
+        .card {
+            margin: 0.4rem auto;
+        }
+
+        .engineStarted {
+            display: none;
+        }
+
+        .card,
+        button {
+            font-size: 12px !important;
+        }
+
+        .table td,
+        .table th {
+            padding: 0 !important;
+        }
+    </style>
+</head>
+
+<body onload="onLoad()" class="bg-light">
+    <header>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-1 bg-white border-bottom shadow-sm">
+                        <!-- <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5> -->
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <nav class="row">
+                                    <a class="col-4 text-dark text-left pt-1 pb-1 pl-5" href="agreement.html"><i
+                                            class="fas fa-chevron-left"></i>&nbsp;&nbsp;Back</a>
+                                    <div
+                                        class="col-4 bg-warning text-dark text-center align-middle rounded-md py-0 my-0">
+                                        <strong>Operator</strong></div>
+                                    <!-- <b class="col-4 bg-warning text-dark text-center align-middle rounded-lg" href="#!"></b> -->
+                                    <div class="col-4 text-dark text-right py-1" style="background-color:transparent;"
+                                        id="engineStatus">
+                                        Engine Off<i class="material-icons text-danger">flash_off</i></div>
+                                </nav>
+                            </div>
+                            <div class="col-sm-5">
+                                <nav class="row">
+                                    <a href="#!" class="col-12 text-dark text-center pt-1"><strong>X-COMET</strong></a>
+                                </nav>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-5">
+                    <div class="row">
+                        <div class="col-3 col-sm-3">
+                            <div class="card">
+                                <div class="card-header text-center p-1">Waktu</div>
+                                <div class="card-body text-center Hours"><time>10:10:10</time></div>
+                            </div>
+                        </div>
+                        <div class="col-5 col-sm-5">
+                            <div class="card">
+                                <div class="card-header text-center p-1">
+                                    <div class="dropdown">
+                                        <button class="btn btn-no-padd dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">Material&nbsp;</button>
+                                        <div class="dropdown-menu" id="dropdownmenumaterial"
+                                            aria-labelledby="dropdownMenuButton">
+                                            <span class="dropdown-item">-</span>
+                                            <a class="dropdown-item" href="#" onclick="setMaterial('NO RIPPING')">NO
+                                                RIPPING</a>
+                                            <a class="dropdown-item" href="#"
+                                                onclick="setMaterial('RIPPING')">RIPPING</a>
+                                            <a class="dropdown-item" href="#" onclick="setMaterial('TOP SOIL')">TOP
+                                                SOIL</a>
+                                            <a class="dropdown-item" href="#" onclick="setMaterial('MUD')">MUD</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body text-center material-type">&nbsp;</div>
+                            </div>
+                        </div>
+                        <div class="col-4 col-sm-4">
+                            <div class="card">
+                                <div class="card-header text-center p-1" id="content-engine-control"></div>
+                                <div class="card-body text-center engine-timer">00:00:00</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <table class="table rounded table-sm table-bordered">
+                                <tr>
+                                    <td class="text-center px-0" width="50%" id="activity-now">-</td>
+                                    <td class="text-center bg-warning durasi-activity px-0 m-0" width="50%">00:00:00
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center px-0" width="50%" id="status-now">-</td>
+                                    <td class="text-center bg-warning durasi-status px-0 m-0" width="50%">00:00:00</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-12 col-sm-12 ">
+                            <table class="table p-0 m-0 table-borderless table-sm rounded rounded-top">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" class="border text-center"><small>PRODUCTIVITAS UNIT</small>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td class="bg-primary p-1" id="allProductivity" width="50%">&nbsp;</td>
+                                    <td class="bg-danger p-1" id="acitivityProductivity" width="50%">&nbsp;</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header text-center"><strong>EFEKTIF</strong></div>
+                                <div class="card-body bg-primary text-light" id="efektf" style="min-height: 35px;">-</div>
+                            </div>
+                            <button class="btn btn-block border border-dark btn-warning btn-lg"
+                                style="font-weight: bolder;" type="button" data-target="#modalStatus"
+                                data-toggle="modal">DAFTAR STATUS</button>
+                        </div>
+                        <div class="col-6">
+                            <div class="card">
+                                <div class="card-header text-center p-0">
+                                    <strong>Metode <button class="btn btn-light btn-lg" data-target="#modalMetode"
+                                            data-toggle="modal"><i class="fas fa-chevron-right"></i></button></strong>
+                                </div>
+                                <div class="card-body" style="min-height: 35px;">
+                                    <strong id="dispMetode">-</strong>
+                                </div>
+                            </div>
+                            <table class="table table-bordered mb-2">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center" colspan="2"><b>Ritase</b></td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td class="text-center"><b>Sebelum</b></td>
+                                        <td class="text-center"><b>Sekarang</b></td>
+                                    </tr> -->
+                                    <tr class="" style="height: 20px;">
+                                        <td class="text-center py-2 m-0 align-middle" width="35%" id="ritase_sebelum">-
+                                        </td>
+                                        <td class="text-center py-2 m-0 align-middle" width="35%" id="ritase_sekarang">-
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-12">
+                            <div class="card">
+                                <!-- <div class="card-header text-center">MUATAN</div> -->
+                                <div class="card-body">
+                                    <div id="listMuatan" class="row">
+                                        <div class="col-12">loading..</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-7 mt-1">
+                    <div class="row no-gutters" id="allActivity">
+                        loading..
+                    </div>
+                    <hr style="margin-top: 0.3rem; margin-bottom: 0.3rem">
+                    <div class="row">
+                        <div class="col-12 engineStarted">
+                            <label for="aktifitias001"
+                                class="btn btn-success btn-block border border-dark btn-block text-left py-0 btn-lg"
+                                style="font-weight:bolder" id="labelAktifitas001" data-aktifitas="LOADING">
+                                <input type="radio" name="aktifitas" id="aktifitias001" autocomplete="off" value="001"
+                                    onclick="setAktifitias(this.value)" style="margin-top: -2px"> LOADING
+                            </label>
+                        </div>
+                        <div class="col-7 engineStarted">
+                            <label for="aktifitias002"
+                                class="btn btn-warning btn-block border border-dark btn-block text-left py-0 btn-lg"
+                                style="font-weight:bolder" id="labelAktifitas002" data-aktifitas="HAULER & SPOTTING">
+                                <input type="radio" name="aktifitas" id="aktifitias002" autocomplete="off" value="002"
+                                    onclick="setAktifitias(this.value)"> HAULER&nbsp;SPOTTING
+                            </label>
+                        </div>
+                        <div class="col-5 engineStarted">
+                            <button class="btn btn-danger btn-block border border-dark py-1 btn-lg" onclick="doneWork()"
+                                style="font-weight:bolder">SELESAI&nbsp;KERJA</button>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-success btn-block border border-dark py-1 btn-lg" id="btn-engine-control"
+                                style="font-weight:bolder">START ENGINE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal" id="myModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Menu Aktifitas</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <div class="row" id="aktifitas-lainnya">
+
+                                </div>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-primary">OK</button> -->
+                                <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" id="modalStatus">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Menu Status</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <div class="row" id="status-lainnya">
+
+                                </div>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-primary">OK</button> -->
+                                <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" id="modalMetode">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title">Menu Metode</h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <div class="row no-gutters" id="allMetode"></div>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <!-- <button type="button" class="btn btn-primary">OK</button> -->
+                                <button type="button" class="btn btn-danger btn-lg" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal" id="hm_akhir">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <!-- Modal Header -->
+                            <div class="modal-header">
+                                <h4 class="modal-title text-center" id="display_me"></h4>
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body">
+                                <form action="" style="margin-top: 24px">
+                                    <div class="form-group">
+                                        <label for="hm">HM AKHIR UNIT:</label>
+                                        <input type="number" class="form-control" id="hm" name="hm" autocomplete="off"
+                                            required placeholder="Input HM Stop">
+                                    </div><br>
+                                    <!-- <p class="text-center large"><b id="">SAYA, <span class="no-nrp"></span></b></p> -->
+                                    <div class="card border-dark" style="border-width: 2px">
+                                        <div class="card-body">
+                                            <p class="text-justify font-weight-bold text-uppercase">Apakah Anda
+                                                benar-benar sudah
+                                                menyelesaikan pekerjaan?</p>
+                                            <p class="text-justify font-weight-bold text-uppercase">Terimakasih sudah
+                                                bekerja
+                                                selamat, sehat, semangat dan cepat</p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Modal footer -->
+                            <div class="modal-footer">
+                                <button class="btn btn-lg btn-success btn-block border-dark" id="selesai-kerja" type="button"
+                                    style="border-width: 2px">SAYA SELESAI BEKERJA</button>
+                                <button class="btn btn-sm btn-danger btn-block border-dark" type="button"
+                                    style="border-width: 2px" onclick="return $('#hm_akhir').modal('hide')">LANJUT
+                                    BEKERJA</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <script src="../cordova.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="./engine.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Logout</title>
+    <meta name="theme-color" content="#563d7c">
+    <!-- Custom styles for this template -->
+    <!-- <link href="signin.css" rel="stylesheet"> -->
+</head>
+<body onload="onLoad()">
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+ <script src="../cordova.js"></script>
+ <script src="../js/app.js"></script>
+<script>
+
+  function onLoad() {
+      window.localStorage.clear();
+      window.location.href="index.html";
+      document.addEventListener("deviceready", onDeviceReady, false);
+      onDeviceReady();
+  }
+
+  // device APIs are available
+  //
+  function onDeviceReady() {
+      document.addEventListener("pause", onPause, false);
+      document.addEventListener("resume", onResume, false);
+      document.addEventListener("menubutton", onMenuKeyDown, false);
+      // $(".submit").on('click', submitting);
+      // Add similar listeners for other events
+  }
+
+  function onPause(){
+
+  }
+
+  function onResume(){
+
+  }
+
+  function onMenuKeyDown(){
+
+  }
+</script>
+</body>
+</html>

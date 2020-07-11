@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Karyawan</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
+        integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+    <meta name="theme-color" content="#563d7c">
+    <!-- Custom styles for this template -->
+    <!-- <link href="signin.css" rel="stylesheet"> -->
+</head>
+
+<body>
+    <div class="p-3 mb-3 bg-white border-bottom shadow-sm">
+        <!-- <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5> -->
+        <div class="row">
+            <div class="col-sm-12">
+                <nav class="row my-2 my-md-0 mr-md-3">
+                    <a class="col-4 text-dark text-left" href="table.html"><i
+                            class="fas fa-chevron-left"></i>&nbsp;&nbsp;Back</a>
+                    <b class="col-4 bg-warning text-dark text-center align-middle rounded-lg" href="#!">Pengawas</b>
+                    <div class="col-4 text-dark text-right"><b>X-COMET</b></div>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <form action="#!" method="GET" class="">
+                    <div class="form-group row">
+                        <div class="col-6">
+                            <label for="pilihTanggal" class="label-control">Pilih Tanggal:</label>
+                            <select name="pilihTanggal" id="pilihTanggal" class="col-12 custom-select"
+                                style="padding: .175rem 0.75rem .175rem .35rem !important; height:auto !important"></select>
+                        </div>
+                        <div class="col-6">
+                            <label for="pilihShift" class="label-control">Pilih Shift:</label>
+                            <select name="pilihShift" id="pilihShift" class="col-12 custom-select"
+                                style="padding: .175rem 0.75rem .175rem .35rem !important; height:auto !important"></select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row">
+                <div class="col-12">
+                    <canvas id="myChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <form action="#!" method="GET">
+                    <div class="form-group row">
+                        <label for="pilihJam" class="col-4">Pilih Jam:</label>
+                        <div class="col-8">
+                            <select name="pilihJam" id="pilihJam" class="custom-select"
+                                style="padding: .175rem 0.75rem .175rem .35rem !important; height:auto !important"></select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row">
+                <div class="col-12 text-white" style="background-color: rgba(150, 150, 150, 0.1);">
+                    <canvas id="myChart2" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="no_unit" class="col-4 col-form-label col-form-label-lg">Excavator:</label>
+                    <div class="col-8 mt-1">
+                        <select name="no_unit" id="no_unit" class="custom-select"
+                            style="padding: .175rem 0.75rem .175rem .35rem !important; height:auto !important"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <table class="table table-bordered table-sm">
+                    <thead>
+                        <tr class="text-center">
+                            <th>JAM</th>
+                            <th>AKTIVITAS</th>
+                            <th>DURASI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="DataExcavator"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+        integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
+    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+    <script src="https://js.pusher.com/6.0/pusher.min.js"></script>
+    <script src="../cordova.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/pusher.js"></script>
+    <script>
+        window.addEventListener('load', onLoad, false);
+        function onLoad() {
+            channel.bind('my-event', function (data) {
+                getDateNew();
+            });
+            getDateNew();
+            var PT = document.getElementById("pilihTanggal");
+            var PJ = document.getElementById("pilihJam");
+            PT.addEventListener("change", grafik1, false);
+            PJ.addEventListener("change", getHorizontalChart, false);
+            document.addEventListener("deviceready", onDeviceReady, false);
+            // $("[name=pilihTanggal").change(grafik1);
+            // $("select[name=pilihJam]").change(getHorizontalChart);
+        }
+
+
+
+        // device APIs are available
+        //
+        function onDeviceReady() {
+
+            document.addEventListener("pause", onPause, false);
+            document.addEventListener("resume", onResume, false);
+            document.addEventListener("menubutton", onMenuKeyDown, false);
+            // $(".submit").click(submitting());
+            // Add similar listeners for other events
+        }
+
+        function onPause() {
+
+        }
+
+        function onResume() {
+
+        }
+
+        function onMenuKeyDown() {
+
+        }
+
+        function grafik1() {
+            getLineChartV2();
+            getTimeData();
+            getExcavator();
+        }
+
+        function getDateNew() {
+            var PT = document.getElementById("pilihTanggal");
+            var API = url + "Unit/getDateUnitData";
+            var get = fetch(API, { method: "GET" })
+                .then(response => response.json())
+                .then(e => {
+                    if (e.response == "success") {
+                        var data = e.data;
+                        var option = "";
+                        
+                        $.each(data, function (i, isi) {
+                            var selected = (isi.tanggal==PT.value) ? "selected" : '';
+                            option += "<option value='" + isi.tanggal + "' label='" + isi.tanggal + "' "+selected+">"+isi.tanggal+"</option>";
+                        });
+                        PT.innerHTML = option;
+                        // $("#pilihTanggal").html(option);
+                    } else {
+                        PT.innerHTML = "";
+                        // $("#pilihTanggal").html("");
+                    }
+                })
+                .catch(error => { console.log(error) });
+            get.then(getShift);
+            // setTimeout(getDateNew, 50000);
+        }
+
+        function getLineChartV2() {
+            var tanggal = document.getElementById("pilihTanggal").value;
+            var shift = document.getElementById("pilihShift").value;;
+            var API = url + "Unit/getProductivityByDate";
+            var data = new FormData();
+            data.append("tanggal", tanggal); data.append("shift", shift);
+            fetch(API, {
+                method: "POST",
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    if (data.response == "success") {
+                        applyLineChart(data);
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            // console.log(fetchData);
+        }
+
+        function applyLineChart(e) {
+            var color = e.color;
+            var ctx = document.getElementById('myChart').getContext('2d');
+            // var datapoints = e.production;
+            var config = {
+                type: 'line',
+                data: {
+                    labels: e.label,
+                    datasets: e.datasets,
+                    color: color,
+                },
+                options: {
+
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Productivity'
+                    },
+                    tooltips: {
+                        mode: 'point'
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                beginAtZero: true
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                            },
+                            ticks: {
+                                suggestedMin: 0,
+                                suggestedMax: 300,
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    layout: {
+                        padding: {
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0
+                        }
+                    }
+                }
+            };
+            var myChart = new Chart(ctx, config);
+            // setTimeout(getLineChartV2, 30000);
+        }
+
+        // function getLineChart() {
+        //     var tanggal = $("[name=pilihTanggal]").val();
+        //     var shift = $("[name=pilihShift]").val();
+        //     if (shift == "") {
+        //         getLineChart();
+        //     }
+        //     $.ajax({
+        //         url: url + "Unit/getProductivityByDate",
+        //         type: "POST",
+        //         data: { tanggal: tanggal, shift: shift },
+        //         dataType: "JSON",
+        //         async: false,
+        //         success: function (e) {
+        //             if (e.response == "success") {
+        //                 var color = e.color;
+        //                 var ctx = document.getElementById('myChart').getContext('2d');
+        //                 // var datapoints = e.production;
+        //                 var config = {
+        //                     type: 'line',
+        //                     data: {
+        //                         labels: e.label,
+        //                         datasets: e.datasets,
+        //                         color: color,
+        //                     },
+        //                     options: {
+
+        //                         responsive: true,
+        //                         title: {
+        //                             display: true,
+        //                             text: 'Productivity'
+        //                         },
+        //                         tooltips: {
+        //                             mode: 'point'
+        //                         },
+        //                         scales: {
+        //                             xAxes: [{
+        //                                 display: true,
+        //                                 scaleLabel: {
+        //                                     display: true,
+        //                                     beginAtZero: true
+        //                                 }
+        //                             }],
+        //                             yAxes: [{
+        //                                 display: true,
+        //                                 scaleLabel: {
+        //                                     display: true,
+        //                                 },
+        //                                 ticks: {
+        //                                     suggestedMin: 0,
+        //                                     suggestedMax: 300,
+        //                                     beginAtZero: true
+        //                                 }
+        //                             }]
+        //                         },
+        //                         layout: {
+        //                             padding: {
+        //                                 left: 0,
+        //                                 right: 0,
+        //                                 top: 0,
+        //                                 bottom: 0
+        //                             }
+        //                         }
+        //                     }
+        //                 };
+        //                 var myChart = new Chart(ctx, config);
+        //                 setTimeout(getLineChart, 30000);
+        //             } else {
+        //                 document.getElementById('myChart').innerHTML = "";
+        //             }
+        //         },
+        //         error: function (e) {
+        //             document.getElementById('myChart').remove;
+        //         }
+        //     });
+        // }
+
+        function getHorizontalChart() {
+            const tanggal = document.getElementById("pilihTanggal").value;
+            const jam = document.getElementById("pilihJam").value;
+            const API = url + "Unit/getHorizontalChart";
+            const data = new FormData();
+            data.append("tanggal", tanggal), data.append("jam", jam);
+            let getData = fetch(API,
+                {
+                    method: "POST",
+                    body: data
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    applyHorizontalChart(data, jam);
+                });
+        }
+
+        function applyHorizontalChart(e, jam) {
+            var color = e.color;
+            var ctx = document.getElementById('myChart2').getContext('2d');
+            // var datapoints = e.production;
+            var config = {
+                type: 'horizontalBar',
+                data: {
+                    labels: e.label,
+                    datasets: e.datasets,
+                    color: color,
+                },
+                options: {
+                    // Elements options apply to all of the options unless overridden in a dataset
+                    // In this case, we are setting the border of each horizontal bar to be 2px wide
+                    elements: {
+                        rectangle: {
+                            borderWidth: 0,
+                        }
+                    },
+                    responsive: true,
+                    legend: {
+                        position: 'right',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Productivity Per Jam ' + jam
+                    }
+                }
+            };
+            var myChart = new Chart(ctx, config);
+            myChart.update();
+            // setTimeout(getHorizontalChart, 30000);
+        }
+
+        // function HoricontalChart() {
+        //     var tanggal = $("[name=pilihTanggal]").val();
+        //     var jam = $("[name=pilihJam]").val();
+        //     $.ajax({
+        //         url: url + "Unit/getHorizontalChart",
+        //         type: 'POST',
+        //         data: { tanggal: tanggal, jam: jam },
+        //         dataType: 'JSON',
+        //         success: function (e) {
+        //             if (e.response == "success") {
+        //                 var color = e.color;
+        //                 var ctx = document.getElementById('myChart2').getContext('2d');
+        //                 // var datapoints = e.production;
+        //                 var config = {
+        //                     type: 'horizontalBar',
+        //                     data: {
+        //                         labels: e.label,
+        //                         datasets: e.datasets,
+        //                         color: color,
+        //                     },
+        //                     options: {
+        //                         // Elements options apply to all of the options unless overridden in a dataset
+        //                         // In this case, we are setting the border of each horizontal bar to be 2px wide
+        //                         elements: {
+        //                             rectangle: {
+        //                                 borderWidth: 0,
+        //                             }
+        //                         },
+        //                         responsive: true,
+        //                         legend: {
+        //                             position: 'right',
+        //                         },
+        //                         title: {
+        //                             display: true,
+        //                             text: 'Productivity Per Jam ' + jam
+        //                         }
+        //                     }
+        //                 };
+        //                 var myChart = new Chart(ctx, config);
+        //                 myChart.update();
+        //             } else {
+        //                 document.getElementById('myChart2').innerHTML = "";
+        //             }
+        //         },
+        //         error: function (e) {
+        //             document.getElementById('myChart').remove;
+        //         }
+        //     });
+        //     setTimeout(HoricontalChart, 30000);
+        // }
+
+        function donutChart() {
+
+        }
+
+        function getDateData() {
+            $.ajax({
+                url: url + "Unit/getDateUnitData",
+                dataType: 'json',
+                async: false,
+                accepts: 'application/json',
+                success: function (e) {
+                    if (e.response == "success") {
+                        var data = e.data;
+                        var option = "";
+                        $.each(data, function (i, isi) {
+                            option += "<option value='" + isi.tanggal + "' label='" + isi.tanggal + "'>" + isi.tanggal + "</option>";
+                        });
+                        $("#pilihTanggal").html(option);
+                    } else {
+                        $("#pilihTanggal").html("");
+                    }
+                },
+                complete: getShift,
+                error: function () {
+                    $("#pilihTanggal").html("");
+                }
+            });
+        }
+
+        function getShift() {
+            var tanggal = $("[name=pilihTanggal]").val();
+            $.ajax({
+                url: url + "Unit/getShiftByDate",
+                type: "POST",
+                async: false,
+                data: { date: tanggal },
+                success: function (e, status) {
+                    if (e.status == "success") {
+                        var optionShift = '';
+                        var data = e.data;
+                        var shift = document.getElementById("pilihShift");
+                        if (data.length > 0) {
+                            $.each(data, function (k, v) {
+                                var selected = (v.shift==shift.value) ? "selected" : '';
+                                optionShift += '<option value="' + v.shift + '" '+selected+'>' + v.shift + '</option>';
+                            });
+                            shift.innerHTML = optionShift;
+                        }
+                        grafik1();
+                        shift.addEventListener("change", getLineChartV2, false);
+                    }
+                },
+            });
+        }
+
+        function getExcavator() {
+            var tanggal = $("[name=pilihTanggal]").val();
+            $.ajax({
+                url: url + "Unit/getUnitByDateFilterV2",
+                type: "post",
+                async: false,
+                data: { tanggal: tanggal },
+                dataType: "json",
+                success: function (e) {
+                    if (e.response == "success") {
+                        var data = e.data;
+                        var option = "";
+                        $.each(data, function (i, isi) {
+                            option += "<option value='" + isi.no_unit + "'>" + isi.no_unit + "</option>";
+                        });
+                        $("[name=no_unit]").html(option);
+
+                    } else {
+                        $("[name=no_unit]").html("");
+                    }
+                },
+                error: function (e) {
+                    $("[name=no_unit]").html("");
+                },
+                complete: function (e) {
+                    getDataExcavator();
+                    $("[name=no_unit]").change(getDataExcavator);
+                    // setTimeout(getExcavator, 20000);
+                }
+            });
+        }
+
+        function getDataExcavator() {
+            var tanggal = $("[name=pilihTanggal]").val();
+            var no_unit = $("[name=no_unit]").val();
+            var data = { tanggal: tanggal, no_unit: no_unit };
+            $.ajax({
+                url: url + "Unit/getDataByNoUnitV2",
+                data: { tanggal: tanggal, no_unit: no_unit },
+                type: "post",
+                dataType: "json",
+                success: function (e) {
+                    if (e.response == "success") {
+                        var data = e.data;
+                        var tbody = "";
+                        $.each(data, function (i, isi) {
+                            tbody += "<tr class='text-center'>";
+                            tbody += "<td>" + isi.jam_sekarang + "</td>";
+                            tbody += "<td>" + isi.status + "</td>";
+                            tbody += "<td>" + isi.durasi + "</td>";
+                            tbody += "</tr>";
+                        });
+                        $("#DataExcavator").html(tbody);
+                    } else {
+                        $("#DataExcavator").html("");
+                    }
+                },
+                error: function (e) {
+                    $("#DataExcavator").html("");
+                },
+                complete: function () {
+                    // setTimeout(getDataExcavator, 30000);
+                }
+            });
+        }
+
+        function getTimeData() {
+            var date = $("[name=pilihTanggal]").val();
+            var tanggal = document.getElementById("pilihTanggal").value;
+            var form = new FormData();
+            form.append("tanggal", tanggal);
+            var API = url + "Unit/getTimeUnitData";
+            var fetching = fetch(API,
+                {
+                    method: "POST",
+                    body: form
+                })
+                .then(response => response.json())
+                .then(e => {
+                    var data = e.data;
+                    var option = "";
+                    $.each(data, function (e, isi) {
+                        var selected = (isi.timeformat==tanggal) ? "selected" : '';
+                        option += "<option value='" + isi.timeformat + "' label='" + isi.timeformat + "' "+selected+">" + isi.timeformat + "</option>";
+                    });
+                    document.getElementById("pilihJam").innerHTML = option;
+                    // $("#pilihJam").html(option);
+                    getHorizontalChart();
+                })
+                .catch(error => {
+                    $("#pilihJam").html("");
+                });
+            // $.ajax({
+            //     url: url + "Unit/getTimeUnitData",
+            //     type: 'POST',
+            //     data: { tanggal: date },
+            //     dataType: 'JSON',
+            //     async: false,
+            //     accepts: "application/json",
+            //     success: function (e) {
+            //         if (e.response == "success") {
+            //             var data = e.data;
+            //             var option = "";
+            //             $.each(data, function (e, isi) {
+            //                 option += "<option value='" + isi.timeformat + "' label='" + isi.timeformat + "'>" + isi.timeformat + "</option>";
+            //             });
+            //             $("#pilihJam").html(option);
+            //             getHorizontalChart();
+
+            //         } else {
+            //             $("#pilihJam").html("");
+            //         }
+            //     },
+            //     error: function (e) {
+            //         $("#pilihJam").html("");
+            //     }
+            // })
+        }
+    </script>
+</body>
+
+</html>

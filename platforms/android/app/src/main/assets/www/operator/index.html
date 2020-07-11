@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+  <meta name="generator" content="Jekyll v3.8.6">
+  <title>Operator</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <meta name="theme-color" content="#563d7c">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <!-- <link href="signin.css" rel="stylesheet"> -->
+</head>
+
+<body onload="onLoad()" class="bg-light">
+  <div class="container-fluid">
+    <h1 class="text-center">X-COMET</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="text-center small"><b>PRODUCTIVITY</b></div>
+          <div class="text-center small"><b>REPORT & MONITORING EFFECTIVENESS REPORT</b></div>
+          <form action="" style="margin-top: 24px">
+            <div class="form-group">
+              <label for="nama">Nama:</label>
+              <select name="nama" id="nama" autofocus autocapitalize="" class="form-control"></select>
+            </div>
+            <div class="form-group">
+              <label for="nounit" style="text-align: right">No Unit:</label>
+              <select name="nounit" id="nounit" class="form-control"></select>
+              <div class="btn-group-toggle mt-0" data-toggle="buttons" id="nounitList"></div>
+              <!-- <select name="nounit" id="nounit" class="custom-select" autocomplete="off" autofocus required placeholder="Isi No Unit Anda"></select> -->
+              <!-- <input type="text" class="form-control" id="nounit" name="nounit"> -->
+            </div>
+            <div class="form-group">
+              <label for="nrp">NRP:</label>
+              <input type="number" class="form-control" readonly id="nrp" name="nrp" autocomplete="off" required
+                placeholder="Isi NRP Anda">
+            </div>
+            <div class="form-group">
+              <label for="shift">Shift:</label>
+              <div class="btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="shift" id="shift1" value="1" required> 1
+                </label>
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="shift" id="shift2" value="2"> 2
+                </label>
+              </div>
+              <!-- <select name="shift" id="shift" class="custom-select">
+                <option value="" disabled selected> Pilih Shift</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select> -->
+            </div>
+            <div class="form-group">
+              <label for="days">Hari Ke:</label>
+              <div class="btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="days" id="days1" value="1"> 1
+                </label>
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="days" id="days2" value="2"> 2
+                </label>
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="days" id="days3" value="3"> 3
+                </label>
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="days" id="days4" value="4"> 4
+                </label>
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="days" id="days5" value="5"> 5
+                </label>
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="days" id="days6" value="6"> 6
+                </label>
+                <label class="btn btn-success btn-lg">
+                  <input type="radio" name="days" id="days7" value="7"> 7
+                </label>
+              </div>
+              <!-- <select name="days" id="days" class="custom-select">
+                <option value="" disabled selected>Pilih Hari Saat Anda Bekerja</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+              </select> -->
+            </div>
+            <div class="form-group">
+              <label for="hm">HM Awal Unit:</label>
+              <input type="number" class="form-control" step="0.1" name="hm" id="hm" required
+                placeholder="Isi HM Unit Awal">
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary btn-block btn-lg continue" type="button">LANJUTKAN</button>
+            </div>
+          </form>
+          <div class="fixed-action-btn"
+            style="position: fixed; bottom: 0; left: 0; right: 0; margin: 0px 24px 8px 24px">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+  <!-- <script src="../cordova.js"></script> -->
+  <script src="../js/app.js"></script>
+  <script>
+    // var dataLogin = JSON.parse(storage.dataUserLogin);
+    // console.log(storage.dataUserLogin);
+    // console.log(dataLogin.nrp);
+    // var operator_start = JSON.parse(storage.operator_start);
+    // $("#nrp").val(dataLogin.nrp);
+    $("#nrp").attr({ 'readonly': true, 'disabled': true });
+    function onLoad() {
+
+      getUnit();
+      getAllOperator();
+      document.addEventListener("deviceready", onDeviceReady, false);
+      $(".continue").click(Continue);
+    }
+
+    // device APIs are available
+    //
+    function onDeviceReady() {
+      document.addEventListener("pause", onPause, false);
+      document.addEventListener("resume", onResume, false);
+      document.addEventListener("menubutton", onMenuKeyDown, false);
+
+      //   document.querySelector(".continue").addEventListener('click', Continue);
+      // $(".submit").click(submitting());
+      // Add similar listeners for other events
+    }
+
+    function onPause() {
+
+    }
+
+    function onResume() {
+
+    }
+
+    function onMenuKeyDown() {
+
+    }
+
+    function getUnit() {
+      $.ajax({
+        url: url + 'Unit/getAll',
+        success: function (e) {
+          var option = '<option></option>';
+          $.each(e, function (i, isi) {
+            option += '<option value="' + isi.kode + '">' + isi.kode + '</option>';
+            // $("#nounitList").append('<label class="btn btn-success btn-sm" style="margin-right: 1px;"><input type="radio" name="nounit" id="nounit' + i + '" value="' + isi.kode + '" required> ' + isi.kode + '</label>');
+          });
+          $("[name=nounit]").html(option);
+          $("[name=nounit]").select2({
+            tags: true,
+            insertTag: function (data, tag) {
+              // Insert the tag at the end of the results
+              data.push(tag);
+            }
+          })
+        }
+      })
+    }
+
+    function getAllOperator() {
+      $.ajax({
+        url: url + "Operator/getAllOperator",
+        type: "GET",
+        success: function (e) {
+          if (e.response == "success") {
+            var data = e.data;
+            var option = '<option></option>';
+            $.each(data, function (k, v) {
+              option += '<option value="' + v.id + '" data-nrp="' + v.nrp + '">' + v.nama + '</option>';
+            });
+            $("[name=nama]").html(option);
+            $("[name=nama]").select2({
+              placeholder: "Masukkan Nama"
+            });
+            var nrp1 = $("[name=nama]").find("option:selected").data("nrp");
+            $("[name=nrp]").val(nrp1);
+            console.log(nrp1);
+            $("[name=nama]").change(function () {
+              var nrp = $(this).find("option:selected").data("nrp");
+              $("[name=nrp]").val(nrp);
+            });
+          }
+        }
+      })
+    }
+
+    function Continue() {
+      // var nounit = $("#nounit").val();
+      var nounit = $("[name=nounit]").val();
+      var nrp = $("#nrp").val();
+      var shift = $("input[name=shift]:radio:checked").val();
+      var days = $("input[name=days]:radio:checked").val();
+      var hm = $("#hm").val();
+      var go = 1;
+      console.log($("form").find("input"));
+      if (nounit == "" || nounit == null) {
+        console.log("No Unit Empty");
+        navigator.notification.alert(
+          'No Unit Wajib Diisi',  // message
+          alertDismissed,         // callback
+          'Failed',            // title
+          'OK'                  // buttonName
+        );
+        go = 0;
+      }
+
+      if (nrp == "" || nrp == null) {
+        console.log("NRP Empty");
+        navigator.notification.alert(
+          'NRP Wajib Diisi',  // message
+          alertDismissed,         // callback
+          'Failed',            // title
+          'OK'                  // buttonName
+        );
+        go = 0;
+      }
+
+      if (shift == "" || shift == null) {
+        console.log("SHIFT Empty");
+        navigator.notification.alert(
+          'Shift Wajib Diisi',  // message
+          alertDismissed,         // callback
+          'Failed',            // title
+          'OK'                  // buttonName
+        );
+        go = 0;
+      }
+
+      if (hm == "" || hm == null) {
+        console.log("HM AWAL Empty");
+        navigator.notification.alert(
+          'HM Unit Awal Wajib Diisi',  // message
+          alertDismissed,         // callback
+          'Failed',            // title
+          'OK'                  // buttonName
+        );
+        go = 0;
+      }
+
+      if (days == "" || days == null) {
+        console.log("HARI KERJA Empty");
+        navigator.notification.alert(
+          'Hari Wajib Diisi',  // message
+          alertDismissed,         // callback
+          'Failed',            // title
+          'OK'                  // buttonName
+        );
+        go = 0;
+      }
+
+      if (go == 1) {
+
+        var data = { noUnit: nounit, nrp: nrp, shift: shift, daysOf: days, hmAwal: hm, createdBy: $("[name=nama]").val() };
+        $.ajax({
+          url: url + "Operator/createActivity",
+          type: 'post',
+          dataType: 'json',
+          data: data,
+          success: function (e) {
+            if (e.message == "success") {
+              window.localStorage.setItem('engineOperator', JSON.stringify(e.operator_start));
+              console.log(e);
+              window.location.href = "agreement.html";
+            } else if (e.message == "failed") {
+              navigator.notification.alert(
+                'Maaf ada kesalahan',  // message
+                alertDismissed,         // callback
+                'Failed',            // title
+                'OK'                  // buttonName
+              );
+              go = 0;
+            }
+          },
+          error: function (e) {
+            navigator.notification.alert(
+              'Maaf ada kesalahan',  // message
+              alertDismissed,         // callback
+              'Failed',            // title
+              'OK'                  // buttonName
+            );
+            go = 0;
+          }
+        });
+      }
+    }
+
+    function alertDismissed() {
+
+    }
+
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.6">
+    <title>Karyawan</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
+        integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+    <meta name="theme-color" content="#563d7c">
+    <!-- Custom styles for this template -->
+    <!-- <link href="signin.css" rel="stylesheet"> -->
+    <style>
+        th,
+        td {
+            font-size: 10px;
+        }
+    </style>
+</head>
+
+<body onload="onLoad()">
+    <div class="p-3 mb-3 bg-white border-bottom shadow-sm">
+        <!-- <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5> -->
+        <div class="row">
+            <div class="col-sm-12">
+                <nav class="row my-2 my-md-0 mr-md-3">
+                    <a class="col-4 text-dark text-left" href="../login/logout.html"><i
+                            class="fas fa-power-off"></i>&nbsp;&nbsp;Logout</a>
+                    <b class="col-4 bg-warning text-dark text-center align-middle rounded-lg" href="#!">Pengawas</b>
+                    <div class="col-4 text-dark text-right"><b>X-COMET</b></div>
+                </nav>
+            </div>
+        </div>
+
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <form action="#!" method="GET" class="row">
+                    <div class="form-group col-6">
+                        <label for="pilihTanggal" class="font-weight-bold">Pilih Tanggal:</label>
+                        <select name="pilihTanggal" id="pilihTanggal" class="custom-select"></select>
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="pilihWaktu" class="font-weight-bold">Pilih Pukul:</label>
+                        <select name="pilihWaktu" id="pilihWaktu" class="custom-select"></select>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="bg-primary text-white text-center align-middle">
+                            <tr>
+                                <th class="text-center" width="15%">NO UNIT</th>
+                                <th class="text-center">PDTY[ACT]</th>
+                                <th class="text-center">PROD[ACT]</th>
+                                <th class="text-center">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataRealtimeOPT"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered">
+                        <thead class="bg-primary text-white text-center">
+                            <tr>
+                                <th width="15%">NO UNIT</th>
+                                <th>ACTIVITIES</th>
+                                <th>DURATION</th>
+                                <!-- <th>VALIDATION</th> -->
+                                <!-- <th></th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="dataActivity"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <button class="btn btn-success btn-sm btn-block" onclick="getSampleFile()">Download</button>
+            </div>
+            <div class="col-6">
+                <a href="index.html" class="btn btn-success btn-sm btn-block">Grafik</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" id="fileExcel"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ModalDetailTableA" tabindex="-1" role="dialog" aria-labelledby="ModalDetailTableA"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title-detail-table"></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-condensed" style="margin-bottom: 50px;">
+                            <thead class="bg-primary text-white text-center">
+                                <tr>
+                                    <th width="15%" nowrap>NO UNIT</th>
+                                    <th>PDTY[ALL]</th>
+                                    <th>PROD[ALL]</th>
+                                    <th nowrap>EFF UNIT</th>
+                                    <th>MATERIAL</th>
+                                    <th>METODE</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-data-table-unit">
+                                <tr>
+                                    <th id="unitDetail"></th>
+                                    <th id="pdtyAllDetail"></th>
+                                    <th id="prodAllDetail"></th>
+                                    <th id="effUnitDetail"></th>
+                                    <th id="MaterialDetail"></th>
+                                    <th id="metodeDetail"></th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Detail UNIT</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="bg-primary text-white text-center">
+                                        <tr>
+                                            <th width="15%">NO UNIT</th>
+                                            <th>STATUS</th>
+                                            <th>DURATION</th>
+                                            <th>VALIDATION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detailUnitData">
+                                        <tr>
+                                            <td colspan="4" class="">LOADING...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalValidation" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Validation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="comment" class="label-control">Komentar:</label>
+                                <input type="text" class="form-control" name="komentar" id="komentar"
+                                    autocomplete="off">
+                            </div>
+                            <div class="alert alert-success alert-dismissible fade hide">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong>Success!</strong> Berhasil Validasi Data
+                            </div>
+                            <div class="alert alert-danger alert-dismissible fade hide">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong>Gagal!</strong> Gagal Validasi Data
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary simpanKomentar">Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+        integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
+    <script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+    <script src="../cordova.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="https://js.pusher.com/6.0/pusher.min.js"></script>
+    <script src="../js/pusher.js"></script>
+    <script>
+        // window.resolveLocalFileSystemURL("file:///android_asset/");
+        // var dirEntry = cordova.file.applicationDirectory;
+        function onLoad() {
+            channel.bind('my-event', function (data) {
+                getDateData();
+            });
+            document.addEventListener("deviceready", onDeviceReady, false);
+            getDateData();
+            $("select[name=pilihTanggal]").change(getTimeData);
+        }
+
+        // device APIs are available
+        //
+        function onDeviceReady() {
+            document.addEventListener("pause", onPause, false);
+            document.addEventListener("resume", onResume, false);
+            document.addEventListener("menubutton", onMenuKeyDown, false);
+            // $(".submit").click(submitting());
+            // Add similar listeners for other events
+        }
+
+        function onPause() {
+
+        }
+
+        function onResume() {
+
+        }
+
+        function onMenuKeyDown() {
+
+        }
+
+        function getDateData() {
+            $.ajax({
+                url: url + "Unit/getDateUnitData",
+                dataType: 'json',
+                accepts: 'application/json',
+                async: false,
+                success: function (e) {
+                    if (e.response == "success") {
+                        var data = e.data;
+                        var option = "";
+                        $.each(data, function (i, isi) {
+                            option += "<option value='" + isi.tanggal + "' label='" + isi.tanggal + "'>" + isi.tanggal + "</option>";
+                        });
+                        $("#pilihTanggal").html(option);
+                        getTimeData();
+                    }
+                }
+            });
+        }
+
+        function getTimeData() {
+            var date = $("select[name=pilihTanggal]").val();
+            $.ajax({
+                url: url + "Unit/getTimeUnitData",
+                type: 'POST',
+                data: { tanggal: date },
+                dataType: 'JSON',
+                async: false,
+                accepts: "application/json",
+                success: function (e) {
+                    if (e.response == "success") {
+                        var data = e.data;
+                        var option = "";
+                        $.each(data, function (e, isi) {
+                            option += "<option value='" + isi.timeformat + "' label='" + isi.timeformat + "'>" + isi.timeformat + "</option>";
+                        });
+                        $("#pilihWaktu").html(option);
+                        getTableData();
+                        $("select[name=pilihWaktu]").change(getTableData);
+                    } else {
+                        $("#pilihWaktu").html("");
+                    }
+                },
+                error: function (e) {
+                    $("#pilihWaktu").html("");
+                }
+            })
+        }
+
+
+        function getTableData() {
+            var date = $("select[name=pilihTanggal]").val();
+            var time = $("select[name=pilihWaktu]").val();
+            $.ajax({
+                url: url + "Unit/getEngineUnitData",
+                type: "post",
+                data: { tanggal: date, jam: time },
+                dataType: 'json',
+                async: false,
+                success: function (e) {
+                    if (e.message == "success") {
+
+                        var status = e.status;
+                        var tbody3 = "";
+                        $.each(status, function (i, isi) {
+
+                        });
+
+                    } else {
+                        $("#dataRealtimeOPT").html("");
+                        $("#dataActivity").html("");
+                    }
+                },
+                error: function (e) {
+                    $("#dataRealtimeOPT").html("");
+                    $("#dataActivity").html("");
+                },
+                complete: function (e) {
+                    console.log("DATA AJA");
+                    // console.log(e);
+                    var data = e.responseJSON.data;
+                    parsingUnit(data);
+                    var activity = e.responseJSON.activity;
+
+                    parsingActivity(activity);
+                    // setTimeout(getTableData, 10000);
+                }
+            });
+        }
+
+        function parsingUnit(data) {
+            $("#dataRealtimeOPT").html("<img src='../assets/preloader.gif' width='100' height='100'>");
+            var tbody = "";
+            $.each(data, function (i, isi) {
+                var act = (isi.act !== null) ? isi.act : "";
+                var actbg = (isi.act == "LOADING") ? "bg-success" : "bg-info";
+                var validation = (isi.validation == null) ? "-" : act;
+                var icon = (isi.validation == null) ? "<button id='act-dataRTOPT-" + isi.id + "' type='button' class='btn btn-warning btn-sm' onclick='validation(\"" + isi.id + "\")' data-id='" + isi.id + "'><i class='fas fa-exclamation-triangle text-white'></i></button>" : "<button type='button' class='btn btn-light btn-sm'><i class='fas fa-check-circle text-success text-right'></i></button>";
+                tbody += "<tr><td class='text-center bg-warning align-middle'>" + isi.no_unit + "</td>";
+                tbody += "<td class='text-center align-middle'>" + isi.act_pdty + "</td>";
+                tbody += "<td class='text-center align-middle'>" + isi.act_prod + "</td>";
+                tbody += "<td class='text-center align-middle'><button type='button' class='btn btn-success btn-sm' onclick='showDetailModal(\"" + isi.no_unit + "\")' data-target='#ModalDetailTableA' data-id='" + isi.no_unit + "'>Detail</button>&nbsp;" + icon + "</td>";
+            });
+            $("#dataRealtimeOPT").html(tbody);
+        }
+
+        function parsingActivity(data) {
+            var tbody2 = "";
+            $.each(data, function (i, isi) {
+                // console.log(isi);
+                var act1 = '';
+                if (isi.act !== null) {
+                    act1 = isi.act;
+                } else {
+                    if (isi.status_engine == "1") {
+                        act1 = "ENGINE START";
+                    }
+                }
+                // var act = (isi.act !== null) ? isi.act : "";
+                // var actbg = (isi.act == "LOADING") ? "bg-success" : "bg-info";
+                // var validation = (isi.validation == null) ? "-" : act;
+                // var icon = (isi.validation == null) ? "<i class='fas fa-exclamation-triangle text-warning text-right' onclick='validation(\"" + isi.id + "\")' data-id='" + isi.id + "'></i>" : "<i class='fas fa-check-circle text-success text-right'></i>";
+                tbody2 += "<tr id='dataRTOPT" + isi.id + "'><td class='text-center bg-warning align-middle' onclick='show_data(\"" + isi.no_unit + "\")' data='" + isi.no_unit + "'>" + isi.no_unit + "</td>";
+                tbody2 += "<td class='text-center " + act1 + "' ><b>" + act1 + "</b></td>";
+                tbody2 += "<td class='text-center'>" + isi.duration + "</td>";
+                // tbody2 += "<td class='text-center' id='validation-dataRTOPT-" + isi.id + "'>" + validation + " " + icon + "</td></tr>";
+            });
+            return $("#dataActivity").html(tbody2);
+        }
+
+        function show_data(no_unit) {
+            var tanggal = $("select[name=pilihTanggal]").val();
+            $.ajax({
+                type: "POST",
+                url: url + "unit/getDataByNoUnit/status",
+                dataType: "JSON",
+                data: { no_unit: no_unit, tanggal: tanggal },
+                success: function (data) {
+                    if (data.response == "success") {
+                        var result = data.data;
+                        var tbody3 = "";
+                        $.each(result, function (i, isi) {
+                            console.log(isi);
+                            var status = isi.keterangan;
+                            var validation = (isi.validation == null) ? "-" : isi.keterangan;
+                            var icon = (isi.validation == null) ? "<i class='fas fa-exclamation-triangle text-warning text-right' onclick='validation(\"" + isi.id + "\")' data-id='" + isi.id + "'></i>" : "<i class='fas fa-check-circle text-primar text-right'></i>";
+                            tbody3 += "<tr><td class='text-center' data='" + isi.no_unit + "'>" + isi.no_unit + "</td>";
+                            tbody3 += "<td class='text-center'>" + status + "</td>";
+                            tbody3 += "<td class='text-center'>" + isi.status_time + "</td>";
+                            tbody3 += "<td class='text-center' id='validation" + isi.id + "'>" + validation + " " + icon + "</td></tr>";
+                        });
+                        $("#detailUnitData").html(tbody3);
+                        // $("#exampleModalLong").modal("show");
+                    } else {
+                        $("#detailUnitData").html("<td colspan='4'><strong>No Data</strong></td>");
+                    }
+
+                },
+                error: function (e) {
+                    console.log(e.status);
+                    if (e.status == 404) {
+                        $("#detailUnitData").html("<td colspan='4' class='text-center'><strong>No Data</strong></td>");
+                    }
+
+                },
+                complete: function () {
+                    $("#exampleModalLong").modal("show");
+                }
+            });
+        }
+
+        function showDetailModal(unit) {
+            var date = $("select[name=pilihTanggal]").val();
+            var time = $("select[name=pilihWaktu]").val();
+            $("#ModalDetailTableA").modal("show");
+            $("#modal-title-detail-table").text("Detail No Unit " + unit);
+            var data = { tanggal: date, jam: time, no_unit: unit };
+            var ajaxOption = { url: url + "Unit/getDetailUnitInTable", data: data, dataType: 'JSON', type: 'POST' };
+            $.ajax(ajaxOption)
+                .done(function (e) {
+                    if (e.message == "success") {
+                        var data = e.data[0];
+                        var material = (data.jenis_material !== null) ? data.jenis_material : '-';
+                        var metode = (data.jenis_metode !== null) ? data.jenis_metode : '-';
+                        $("#unitDetail").text(unit).addClass("text-center");
+                        $("#pdtyAllDetail").text(data.all_pdty);
+                        $("#prodAllDetail").text(data.all_prod);
+                        $("#effUnitDetail").text(data.eff + "%");
+                        $("#MaterialDetail").text(material).addClass("text-center");
+                        $("#metodeDetail").text(metode).addClass("text-center");
+                    }
+                });
+            $("#ModalDetailTableA").on("hide.bs.modal", function (e) {
+                $("#unitDetail").text('').removeClass("text-center");
+                $("#pdtyAllDetail").text('');
+                $("#prodAllDetail").text('');
+                $("#effUnitDetail").text('');
+                $("#MaterialDetail").text('').removeClass("text-center");
+                $("#metodeDetail").text('').removeClass("text-center");
+            });
+        }
+
+        function validation(id) {
+            var user = JSON.parse(localStorage.dataUserLogin);
+            $("#modalValidation").modal("show");
+            // $("#modalValidation").modal("show");
+            // alert("ID : " + id);
+            $("[name=komentar]").attr("autofocus", "on");
+            $(".simpanKomentar").click(function () {
+                var komentar = $("[name=komentar]").val();
+                $.ajax({
+                    url: url + "Unit/validationData",
+                    type: "POST",
+                    data: { komentar: komentar, id: id, user: user.id },
+                    success: function (e) {
+                        if (e.response == "success") {
+                            $("[name=komentar]").val("");
+                            $(".alert-success").removeClass("hide").addClass("show");
+                            $(".alert-success").hide(1000);
+                            // $("#act-dataRTOPT-" + id).removeAttr("onclick");
+                            $("#act-dataRTOPT-" + id).html("<i class='fas fa-check-circle text-success text-right'></i>");
+                            $("#act-dataRTOPT-" + id).removeAttr("onclick").removeClass("btn-warning").addClass("btn-light");
+                            $("#success-alert").show().fadeOut(2000);
+                            $("#modalValidation").modal("hide");
+                            // $("#validation-dataRTOPT-" + id).html($("#act-dataRTOPT-" + id).text() + "&Nbsp;<i class='fas fa-check-circle text-success text-right'></i>");
+                        } else {
+                            $(".alert-danger").removeClass("hide").addClass("show");
+                            $(".alert-danger").hide(1000);
+                            $("#failed-alert").show().fadeOut(2000);
+                        }
+                    },
+                    complete: function () {
+                        $(".alert").removeClass("show").addClass("hide");
+                    },
+                    error: function () {
+                        $("#failed-alert").show().fadeOut(2000);
+                        $(".alert-danger").removeClass("hide").addClass("show");
+                    }
+                });
+            });
+        }
+
+        function download() {
+            var date = $("select[name=pilihTanggal]").val();
+            $.ajax({
+                url: url + 'unit/getToExcel/' + date,
+                success: function () {
+                    window.open(url + 'unit/getToExcel/' + date, '_blank');
+                }
+            });
+
+        }
+        function getSampleFile(dirEntry) {
+            var date = $("select[name=pilihTanggal]").val();
+            var request = new XMLHttpRequest();
+            request.open('GET', url + "ExportExcel/excel/" + date, true);
+            // request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+            request.responseType = 'blob';
+
+            request.onload = function (e) {
+                if (this.status === 200) {
+                    var filename = "";
+                    var disposition = request.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        filename = "Database " + date + ".xls";
+                    }
+                    var type = request.getResponseHeader('Content-Type');
+
+                    var blob = new Blob([this.response], { type: type });
+                    if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                        console.log("msSaveBlon");
+                        // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                        window.navigator.msSaveBlob(blob);
+                    } else {
+                        var URL = window.URL || window.webkitURL;
+                        var downloadUrl = URL.createObjectURL(blob);
+
+                        if (filename) {
+                            // use HTML5 a[download] attribute to specify filename
+                            var a = document.createElement("a");
+                            // safari doesn't support this yet
+                            if (typeof a.download === 'undefined') {
+                                console.log("windoow location");
+                                window.location = downloadUrl;
+                            } else {
+                                console.log("appending a");
+                                // a.href = downloadUrl;
+                                // a.download = filename;
+                                // document.body.appendChild(a);
+                                // a.click();
+                                location.href = url + "ExportExcel/excel/" + date;
+                            }
+                        } else {
+                            console.log("else window location " + downloadUrl);
+                            window.location = url + "ExportExcel/excel/" + date;
+                        }
+
+                        setTimeout(function () { URL.revokeObjectURL(downloadUrl); }, 100); // cleanup
+                    }
+                }
+            };
+            request.send();
+
+            // var xhr = new XMLHttpRequest();
+            // xhr.open('GET', url + "ExportExcel/excel/" + date, true);
+            // xhr.responseType = 'blob';
+
+            // xhr.onload = function () {
+            //     if (this.status == 200) {
+
+            //         var blob = new Blob([this.response], { type: 'application/xls' });
+            //         saveFile(dirEntry, blob, "Excel-" + date + ".xls");
+            //     }
+            // };
+            // xhr.send();
+        }
+
+        function saveFile(dirEntry, fileData, fileName) {
+
+            dirEntry.getFile(fileName, { create: true, exclusive: false }, function (fileEntry) {
+
+                writeFile(fileEntry, fileData);
+
+            }, onErrorCreateFile);
+        }
+
+        function writeFile(fileEntry, dataObj, isAppend) {
+
+            // Create a FileWriter object for our FileEntry (log.txt).
+            fileEntry.createWriter(function (fileWriter) {
+
+                fileWriter.onwriteend = function () {
+                    console.log("Successful file write...");
+                    if (dataObj.type == "image/png") {
+                        readBinaryFile(fileEntry);
+                    }
+                    else {
+                        readFile(fileEntry);
+                    }
+                };
+
+                fileWriter.onerror = function (e) {
+                    console.log("Failed file write: " + e.toString());
+                };
+
+                fileWriter.write(dataObj);
+            });
+        }
+
+        function readFile(fileEntry) {
+
+            fileEntry.file(function (file) {
+                var reader = new FileReader();
+
+                reader.onloadend = function () {
+                    console.log("Successful file read: " + this.result);
+                    displayFileData(fileEntry.fullPath + ": " + this.result);
+                };
+
+                reader.readAsText(file);
+
+            }, onErrorReadFile);
+        }
+
+        function readBinaryFile(fileEntry) {
+
+            fileEntry.file(function (file) {
+                var reader = new FileReader();
+
+                reader.onloadend = function () {
+
+                    console.log("Successful file write: " + this.result);
+                    displayFileData(fileEntry.fullPath + ": " + this.result);
+
+                    var blob = new Blob([new Uint8Array(this.result)], { type: "application/xls" });
+                    displayImage(blob);
+                };
+
+                reader.readAsArrayBuffer(file);
+
+            }, onErrorReadFile);
+        }
+
+        function displayImage(blob) {
+
+            // Displays image if result is a valid DOM string for an image.
+            var elem = document.getElementById('fileExcel');
+            // Note: Use window.URL.revokeObjectURL when finished with image.
+            elem.src = window.URL.createObjectURL(blob);
+        }
+
+        function displayImageByFileURL(fileEntry) {
+            var elem = document.getElementById('fileExcel');
+            elem.src = fileEntry.toURL();
+        }
+
+    </script>
+</body>
+
+</html>
