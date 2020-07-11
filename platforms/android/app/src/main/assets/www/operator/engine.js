@@ -52,22 +52,22 @@ document.getElementById("acitivityProductivity").innerHTML = act_productive_tabl
 var t2;
 
 var app = {
-    init: () => {
-        document.addEventListener("deviceready", app.onDeviceReady, false);
+    init: function () {
+        document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
-    onDeviceReady: () => {
+    onDeviceReady: function () {
         window.screen.orientation.lock('landscape-primary');
         if (localStorage.dataEngine != null || localStorage.dataEngine != "" || localStorage != "undefined") {
             localStorage.removeItem("dataEngine");
         }
-        document.addEventListener("offline", onOffline, false);
-        document.addEventListener("online", onOnline, false);
+        document.addEventListener("offline", this.onOffline, false);
+        document.addEventListener("online", this.onOnline, false);
         document.getElementById("content-engine-control").addEventListener("click", controlEngine);
         document.addEventListener("pause", onPause, false);
         document.addEventListener("resume", onResume, false);
         document.addEventListener("menubutton", onMenuKeyDown, false);
         document.addEventListener("backbutton", onBackKeyDown, false);
-        document.getElementById("btn-engine-control").addEventListener("click", app.controlEngine, false);
+        document.getElementById("btn-engine-control").addEventListener("click", this.controlEngine, false);
         document.getElementById("selesai-kerja").addEventListener("click", FinalDone, false);
 
         app.startTime();
@@ -77,6 +77,30 @@ var app = {
         app.loadMetode();
         app.loadStatus();
         app.initialize_engine();
+    },
+    onOffline: function () {
+        console.log("lost connection");
+    },
+    onOnline: function () {
+        console.log('Connection type: ' + app.NetworkState());
+        if (app.NetworkState() !== Connection.NONE) {
+            console.log(!!localStorage.dataEngine);
+            if (!!localStorage.dataEngine) {
+                app.tryUploadData();
+            }
+        }
+    },
+    NetworkState: () => navigator.connection.type,
+    tryUploadData: function () {
+        var str_data_engine = localStorage.dataEngine;
+        var dataEngine = JSON.parse(str_data_engine);
+        var str_local_storage = "Data Local Storage : ";
+        console.log(str_local_storage);
+        console.log(str_data_engine);
+        if (dataEngine.data.length > 0) {
+            $.post(url + "api/engine/create", dataEngine).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
+            localStorage.removeItem("dataEngine");
+        }
     },
     timer_status_engine_per_hour: 0,
     engine_minute_per_hour: 0,
@@ -96,15 +120,14 @@ var app = {
         }
         app.engine_per_hour();
     },
-    startTime: () => { startTime() },
-    onLoad: () => { onLoad() },
-    loadMaterial: () => { loadMaterial() },
-    loadActivity: () => { loadActivity() },
-    loadMetode: () => { loadMetode() },
-    loadMuatan: () => { loadMuatan() },
-    loadStatus: () => { loadStatus() },
+    startTime: () => startTime(),
+    loadMaterial: () => loadMaterial(),
+    loadActivity: () => loadActivity(),
+    loadMetode: () => loadMetode(),
+    loadMuatan: () => loadMuatan(),
+    loadStatus: () => loadStatus(),
     createdBy: operator_start.created_by,
-    change_ritase: () => {
+    change_ritase: function () {
         if (app.on_time_reset_ritase) {
             ritase_sebelum = ritase_sekarang;
             ritase_sekarang = 0;
@@ -113,11 +136,11 @@ var app = {
             actual_productivity_unit = parseFloat(0);
             reset_ritase = '';
             app.on_time_reset_ritase = false;
-            actProductivityHTML();
+            app._actual_productivity_();
         }
     },
-    setActualProductivity: () => { actProductivityHTML() },
-    initialize_engine: () => {
+    setActualProductivity: () => app._actual_productivity_(),
+    initialize_engine: function () {
         $(".engineStarted").hide();
         $("#btn-engine-control").show();
         statusEngine = 0;
@@ -136,7 +159,7 @@ var app = {
             engineControl.html('Engine&nbsp;' + iconStop);
         }
     },
-    _all_productivity_: () => {
+    _all_productivity_: function () {
         var allPdty = parseFloat(0);
         if (minutes != 0 && seconds != 0 && muatan > 0) {
             var pembagi = (hours + ((minutes + 1) / 60));
@@ -152,7 +175,7 @@ var app = {
     },
     _actual_productivity_: () => {
         var act_prod = parseFloat(0);
-        console.log("Actual Productivity : " + muatanPerJam);
+        // console.log("Actual Productivity : " + muatanPerJam);
         if (minutes != 0 && seconds != 0 && muatanPerJam > 0) {
             var pembagi = ((minutes + 1) / 60);
             act_prod = parseFloat(muatanPerJam / pembagi);
@@ -172,8 +195,8 @@ var app = {
             $("#efektf").html("<strong>" + displayEffectivness + "%</strong>");
         }
     },
-    check_engine_lipat: () => { check_engine_lipat() },
-    controlEngine: () => {
+    check_engine_lipat: () => check_engine_lipat(),
+    controlEngine: function () {
         if (statusEngine == 0) {
             timer();
             statusEngine = 1;
@@ -229,8 +252,9 @@ var app = {
     },
     on_time_reset_ritase: false,
     check_time: (i) => {
-        if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
-        return i;
+        return (i < 10) ? "0" + i : i;
+        // if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+        // return i;
     }
 }
 
@@ -246,9 +270,9 @@ function startTime() {
     hWorld = h;
     mWorld = m;
     sWorld = s;
-    h = checkTime(h);
-    m = checkTime(m);
-    s = checkTime(s);
+    h = app.check_time(h);
+    m = app.check_time(m);
+    s = app.check_time(s);
     $(".Hours").html(h + ":" + m + ":" + s);
 
     if (s == 59 && m == 59) {
@@ -256,7 +280,7 @@ function startTime() {
         // RESET ACCUMULATIVE LOADING TIME PER HOUR
         if (!app.on_time_reset_ritase) {
             app.on_time_reset_ritase = true;
-            setTimeout(() => { submitting("Reset Ritase", "Reset Ritase") }, 1000);
+            setTimeout(function () { submitting("Reset Ritase", "Reset Ritase") }, 1000);
         }
         clearTimeout(ACCUMULATIVE_LOAD);
         ACCUMULATIVE_HOUR_LOAD = 0, ACCUMULATIVE_MINUTE_LOAD = 0, ACCUMULATIVE_SECOND_LOAD = 0;
@@ -272,10 +296,10 @@ function startTime() {
     app._actual_productivity_();
     t2 = setTimeout(startTime, 1000);
 }
-function checkTime(i) {
-    if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
-    return i;
-}
+// function checkTime(i) {
+//     if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
+//     return i;
+// }
 
 // ACCUMULATIVE ALL LOADING TIME
 function timerLoading() {
@@ -984,7 +1008,7 @@ function submitting(segmen, keterangan) {
         shift: shift,
         ACCUMULATIVETIMERPERHOUR: ACCUMULATIVETIMER
     };
-    if (localStorage.dataEngine == null || !localStorage.dataEngine || localStorage.dataEngine.length == 0) {
+    if (!localStorage.dataEngine) {
         var dataArray = { data: [] };
         dataArray.data.push(dataInsert);
         var dataString = JSON.stringify(dataArray);
@@ -997,29 +1021,27 @@ function submitting(segmen, keterangan) {
     }
     var dataEngineStorage = JSON.parse(localStorage.dataEngine);
     dataInsert = dataEngineStorage;
-    // $.ajax(
-    //     {
-    //         url: url + "api/engine/create",
-    //         data: dataInsert,
-    //         type: "POST"
-    //     }
-    // ).done(onSuccessSubmitting).fail(onFailSubmitting).always(onDoneSubmitting);
-    $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
-}
 
-function onSuccessSubmitting(e, status) {
-    if (status == "success") {
-        localStorage.removeItem("dataEngine");
-        $("#myModal").modal("hide");
-        $("#modalStatus").modal("hide");
-        $("#modalMetode").modal("hide");
-        if (reset_ritase == "Reset Ritase") {
-            setTimeout(app.change_ritase, 1000);
-        }
+    if (app.on_time_reset_ritase) {
+        setTimeout(app.change_ritase, 1000);
+    }
+    if (app.NetworkState() !== Connection.NONE) {
+        $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
+    } else {
+        console.log("DATA STORED IN LOCAL");
     }
 }
 
+function onSuccessSubmitting(e, status) {
+    console.log("SUKSES UPLOAD DATA");
+    localStorage.removeItem("dataEngine");
+    $("#myModal").modal("hide");
+    $("#modalStatus").modal("hide");
+    $("#modalMetode").modal("hide");
+}
+
 function onFailSubmitting(e, status) {
+    console.log("DATA STORED IN LOCAL");
     return false;
 }
 
@@ -1036,14 +1058,6 @@ function resetRitase() {
     reset_ritase = '';
 }
 
-function onOffline(data) {
-
-}
-
-function onOnline(data) {
-
-}
-
 function checkConnection() {
     var networkState = navigator.connection.type;
 
@@ -1058,8 +1072,6 @@ function checkConnection() {
     states[Connection.NONE] = 'No network connection';
     return states[networkState];
 }
-
-
 
 function alertDismissed() {
     // do something

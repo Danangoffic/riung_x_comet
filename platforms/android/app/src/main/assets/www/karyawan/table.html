@@ -245,13 +245,10 @@
         // window.resolveLocalFileSystemURL("file:///android_asset/");
         // var dirEntry = cordova.file.applicationDirectory;
         function onLoad() {
-            channel.bind('my-event', function (data) {
-                getDateData();
-            });
             document.addEventListener("deviceready", onDeviceReady, false);
             getDateData();
-            $("select[name=pilihTanggal]").change(getTimeData);
         }
+        $(document).ready(onDeviceReady);
 
         // device APIs are available
         //
@@ -261,6 +258,14 @@
             document.addEventListener("menubutton", onMenuKeyDown, false);
             // $(".submit").click(submitting());
             // Add similar listeners for other events
+            channel.bind('my-event', function (data) {
+                console.log(data);
+                getDateData();
+            });
+            document.getElementById("pilihTanggal").addEventListener("change", getTimeData, false);
+            document.getElementById("pilihWaktu").addEventListener("change", getTableData, false);
+            // $("select[name=pilihTanggal]").change(getTimeData);
+            // $("select[name=pilihWaktu]").change(getTableData);
         }
 
         function onPause() {
@@ -276,58 +281,49 @@
         }
 
         function getDateData() {
-            $.ajax({
-                url: url + "Unit/getDateUnitData",
-                dataType: 'json',
-                accepts: 'application/json',
-                async: false,
-                success: function (e) {
-                    if (e.response == "success") {
-                        var data = e.data;
-                        var option = "";
-                        $.each(data, function (i, isi) {
-                            option += "<option value='" + isi.tanggal + "' label='" + isi.tanggal + "'>" + isi.tanggal + "</option>";
-                        });
-                        $("#pilihTanggal").html(option);
-                        getTimeData();
-                    }
-                }
-            });
+            $.getJSON(url + "Unit/getDateUnitData").then(onSuccessGetDateData);
+        }
+
+        function onSuccessGetDateData(e, status) {
+            if (e.response == "success") {
+                var data = e.data;
+                var option = "";
+                $.each(data, function (i, isi) {
+                    option += "<option value='" + isi.tanggal + "' label='" + isi.tanggal + "'>" + isi.tanggal + "</option>";
+                });
+                $("#pilihTanggal").html(option);
+                getTimeData();
+            }
         }
 
         function getTimeData() {
             var date = $("select[name=pilihTanggal]").val();
-            $.ajax({
-                url: url + "Unit/getTimeUnitData",
-                type: 'POST',
-                data: { tanggal: date },
-                dataType: 'JSON',
-                async: false,
-                accepts: "application/json",
-                success: function (e) {
-                    if (e.response == "success") {
-                        var data = e.data;
-                        var option = "";
-                        $.each(data, function (e, isi) {
-                            option += "<option value='" + isi.timeformat + "' label='" + isi.timeformat + "'>" + isi.timeformat + "</option>";
-                        });
-                        $("#pilihWaktu").html(option);
-                        getTableData();
-                        $("select[name=pilihWaktu]").change(getTableData);
-                    } else {
-                        $("#pilihWaktu").html("");
-                    }
-                },
-                error: function (e) {
-                    $("#pilihWaktu").html("");
-                }
-            })
+            $.post(url + "Unit/getTimeUnitData", { tanggal: date }).then(onSuccessGetTimeData).fail(onFailGetTimeData);
+        }
+
+        function onSuccessGetTimeData(e) {
+            if (e.response == "success") {
+                var data = e.data;
+                var option = "";
+                $.each(data, function (e, isi) {
+                    option += "<option value='" + isi.timeformat + "' label='" + isi.timeformat + "'>" + isi.timeformat + "</option>";
+                });
+                $("#pilihWaktu").html(option);
+                getTableData();
+
+            } else {
+                $("#pilihWaktu").html("");
+            }
+        }
+
+        function onFailGetTimeData(error) {
+            $("#pilihWaktu").html("");
         }
 
 
         function getTableData() {
-            var date = $("select[name=pilihTanggal]").val();
-            var time = $("select[name=pilihWaktu]").val();
+            var date = document.getElementById("pilihTanggal").value;// $("select[name=pilihTanggal]").val();
+            var time = document.getElementById("pilihWaktu").value;// $("select[name=pilihWaktu]").val();
             $.ajax({
                 url: url + "Unit/getEngineUnitData",
                 type: "post",
