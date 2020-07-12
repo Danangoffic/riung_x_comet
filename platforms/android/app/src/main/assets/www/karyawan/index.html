@@ -9,7 +9,7 @@
     <meta name="generator" content="Jekyll v3.8.6">
     <title>Karyawan</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/">
+    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.4/examples/sign-in/"> -->
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
@@ -19,11 +19,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
         integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
     <meta name="theme-color" content="#563d7c">
+    <style>
+        .btn{
+            padding: 4px 12px;
+        }
+        
+    </style>
     <!-- Custom styles for this template -->
     <!-- <link href="signin.css" rel="stylesheet"> -->
 </head>
 
-<body>
+<body onload="onLoad()">
     <div class="p-3 mb-3 bg-white border-bottom shadow-sm">
         <!-- <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5> -->
         <div class="row">
@@ -50,8 +56,22 @@
                         </div>
                         <div class="col-6">
                             <label for="pilihShift" class="label-control">Pilih Shift:</label>
-                            <select name="pilihShift" id="pilihShift" class="col-12 custom-select"
-                                style="padding: .175rem 0.75rem .175rem .35rem !important; height:auto !important"></select>
+                            <div class="col-12">
+                                <div class="button-group btn-group-toggle" data-toggle="buttons">
+                                    <label for="shift-1" class="btn btn-outline-success rounded-circle" style="margin-right: 4px;;">
+                                        <input type="radio" name="shift" id="shift-1" value="1" checked>1
+                                    </label>
+                                    <label for="shift-2" class="btn btn-outline-success rounded-circle" style="margin-left: 4px;">
+                                        <input type="radio" name="shift" id="shift-2" value="2">2
+                                    </label>
+                                    <!-- <button type="button" class="btn btn-outline-success rounded-circle"
+                                        id="pilih-shift-1">1</button>
+                                    <button type="button" class="btn btn-outline-success rounded-circle"
+                                        id="pilih-shift-2">2</button> -->
+                                </div>
+                            </div>
+                            <!-- <select name="pilihShift" id="pilihShift" class="col-12 custom-select"
+                                style="padding: .175rem 0.75rem .175rem .35rem !important; height:auto !important"></select> -->
                         </div>
                     </div>
                 </form>
@@ -125,16 +145,9 @@
     <script src="../js/app.js"></script>
     <script src="../js/pusher.js"></script>
     <script>
-        window.addEventListener('load', onLoad, false);
         function onLoad() {
-
             document.addEventListener("deviceready", onDeviceReady, false);
-            // $("[name=pilihTanggal").change(grafik1);
-            // $("select[name=pilihJam]").change(getHorizontalChart);
         }
-
-
-
         // device APIs are available
         //
         function onDeviceReady() {
@@ -149,6 +162,8 @@
             document.addEventListener("pause", onPause, false);
             document.addEventListener("resume", onResume, false);
             document.addEventListener("menubutton", onMenuKeyDown, false);
+            $("[name=shift]").change(getLineChartV2);
+            // document.getElementsByName("shift").addEventListener("change", getLineChartV2, false);
             // $(".submit").click(submitting());
             // Add similar listeners for other events
         }
@@ -195,13 +210,13 @@
                     }
                 })
                 .catch(error => { console.log(error) });
-            get.then(getShift);
+            get.then(grafik1);
             // setTimeout(getDateNew, 50000);
         }
 
         function getLineChartV2() {
             var tanggal = document.getElementById("pilihTanggal").value;
-            var shift = document.getElementById("pilihShift").value;;
+            var shift = $("[name=shift]:checked").val();
             var API = url + "Unit/getProductivityByDate";
             var data = new FormData();
             data.append("tanggal", tanggal); data.append("shift", shift);
@@ -238,7 +253,7 @@
                     responsive: true,
                     title: {
                         display: true,
-                        text: 'Productivity'
+                        text: 'Production'
                     },
                     tooltips: {
                         mode: 'point'
@@ -578,7 +593,7 @@
         }
 
         function getTimeData() {
-            var date = $("[name=pilihTanggal]").val();
+            // var date = $("[name=pilihTanggal]").val();
             var tanggal = document.getElementById("pilihTanggal").value;
             var form = new FormData();
             form.append("tanggal", tanggal);

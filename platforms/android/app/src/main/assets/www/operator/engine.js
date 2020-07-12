@@ -67,13 +67,15 @@ var app = {
         document.addEventListener("resume", onResume, false);
         document.addEventListener("menubutton", onMenuKeyDown, false);
         document.addEventListener("backbutton", onBackKeyDown, false);
-        document.getElementById("btn-engine-control").addEventListener("click", this.controlEngine, false);
+        // document.getElementById("").addEventListener("click", this.controlEngine, false);
+        $("#btn-engine-control").click(this.controlEngine);
+        // document.getElementById("btn-engine-control-big").addEventListener("click", this.controlEngine, false);
         document.getElementById("selesai-kerja").addEventListener("click", FinalDone, false);
 
         // call everything first
         app.start_everyting_first_here();
     },
-    start_everyting_first_here: function(){
+    start_everyting_first_here: function () {
         app.startTime();
         app.loadMaterial();
         app.loadActivity();
@@ -95,13 +97,15 @@ var app = {
         }
     },
     NetworkState: () => navigator.connection.type,
+    status_try: true,
     tryUploadData: function () {
         var str_data_engine = localStorage.dataEngine;
         var dataEngine = JSON.parse(str_data_engine);
         var str_local_storage = "Data Local Storage : ";
         console.log(str_local_storage);
         console.log(str_data_engine);
-        if (dataEngine.data.length > 0) {
+        if (dataEngine.data.length > 0 && app.status_try) {
+            app.status_try = false;
             $.post(url + "api/engine/create", dataEngine).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
             localStorage.removeItem("dataEngine");
         }
@@ -117,9 +121,10 @@ var app = {
         app.engine_second_per_hour++;
         if (app.engine_second_per_hour >= 60) {
             app.engine_minute_per_hour++;
+            app.engine_second_per_hour = 0;
             if (app.engine_minute_per_hour >= 60) {
+                app.engine_hour_per_hour++;
                 app.engine_minute_per_hour = 0;
-                app.engine_hour_per_hour += 1;
             }
         }
         app.engine_per_hour();
@@ -178,9 +183,11 @@ var app = {
     },
     _actual_productivity_: () => {
         var act_prod = parseFloat(0);
+        var hourly_minute = app.engine_minute_per_hour;
+        var hourly_second = app.engine_second_per_hour;
         // console.log("Actual Productivity : " + muatanPerJam);
-        if (minutes != 0 && seconds != 0 && muatanPerJam > 0) {
-            var pembagi = ((minutes + 1) / 60);
+        if (hourly_minute != 0 && hourly_second != 0 && muatanPerJam > 0) {
+            var pembagi = ((hourly_minute + 1) / 60);
             act_prod = parseFloat(muatanPerJam / pembagi);
             actual_productivity_unit = act_prod;
         }
@@ -201,7 +208,9 @@ var app = {
     check_engine_lipat: () => check_engine_lipat(),
     controlEngine: function () {
         if (statusEngine == 0) {
+            // ENGNIE STATUS ON
             timer();
+            app.engine_per_hour();
             statusEngine = 1;
             storage.setItem('statusEngine', statusEngine);
             engineControl.html('Engine&nbsp;' + iconStop);
@@ -225,6 +234,7 @@ var app = {
             keterangan = "Engine On";
             submitting(segmen, keterangan);
         } else {
+            // ENGINE STATUS OFF
             $(".engineStarted").hide();
             $("#btn-engine-control").show();
 
@@ -242,6 +252,7 @@ var app = {
             clearTimeout(tAct); clearTimeout(tLoad); clearTimeout(ACCUMULATIVE_LOAD);
             clearTimeout(t);
             clearTimeout(tLoad);
+            clearTimeout(this.timer_status_engine_per_hour);
             // if (secondsAct > 0 || minutesAct > 0 || hoursAct > 0) {
 
             // }
@@ -259,6 +270,10 @@ var app = {
         // if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
         // return i;
     }
+}
+
+function control_engine_big() {
+    app.controlEngine();
 }
 
 
@@ -291,7 +306,7 @@ function startTime() {
         if (aktivitas == "001") {
             ACCUMULATIVELoading();
         }
-        // CLEAR ACCUMULATIVE LOADING TIMER
+        // CLEAR ACCUMULATIVE LOADING TIMER AND ENGINE HOURLY
 
         t2 = setTimeout(startTime, 1000);
     }
@@ -575,7 +590,7 @@ function doneWork() {
 function FinalDone() {
     if ($("[name=hm]").val != "") {
         statusEngine = 0;
-        clearTimeout(t);
+
         var segmen = "Selesai Kerja";
         submitting(segmen, segmen);
         var id = operator_start.id;
@@ -584,9 +599,10 @@ function FinalDone() {
             type: 'POST',
             data: { id: id, hm: $("[name=hm]").val() },
             dataType: "JSON",
-            async: false,
             success: function (e) {
                 if (e.response == "success") {
+                    clearTimeout(t);
+                    clearTimeout(app.timer_status_engine_per_hour);
                     clearTimeout(tAct);
                     secondsAct = 0, minutesAct = 0, hoursAct = 0, tAct;
                     clearTimeout(tStatus);
@@ -981,6 +997,11 @@ function submitting(segmen, keterangan) {
         reset_ritase = segmen;
         segmen = (localStorage.segmen == "Muatan") ? "Aktifitas" : localStorage.segmen;
         keterangan = (localStorage.keterangan == "11BCM" || localStorage.keterangan == "12BCM" || localStorage.keterangan == "14BCM") ? "LOADING" : localStorage.keterangan;
+
+        // reset hourly engine
+        clearTimeout(app.timer_status_engine_per_hour);
+        app.engine_hour_per_hour = 0, app.engine_minute_per_hour = 0, app.engine_second_per_hour = 0;
+        app.engine_per_hour();
     }
     localStorage.setItem("segmen", segmen);
     localStorage.setItem("keterangan", keterangan);
@@ -1037,6 +1058,7 @@ function submitting(segmen, keterangan) {
 }
 
 function onSuccessSubmitting(e, status) {
+    app.status_try = true;
     console.log("SUKSES UPLOAD DATA");
     localStorage.removeItem("dataEngine");
     $("#myModal").modal("hide");

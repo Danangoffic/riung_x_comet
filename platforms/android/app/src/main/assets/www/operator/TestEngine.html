@@ -209,27 +209,19 @@
                     <div class="row">
                         <div class="col-12 engineStarted">
                             <label for="aktifitias001"
-                                class="btn btn-success btn-block border border-dark btn-block text-left py-0 btn-lg"
+                                class="btn btn-success btn-block border border-dark btn-block text-left py-2 btn-lg"
                                 style="font-weight:bolder" id="labelAktifitas001" data-aktifitas="LOADING">
                                 <input type="radio" name="aktifitas" id="aktifitias001" autocomplete="off" value="001"
                                     onclick="setAktifitias(this.value)" style="margin-top: -2px"> LOADING
                             </label>
                         </div>
-                        <div class="col-7 engineStarted">
-                            <label for="aktifitias002"
-                                class="btn btn-warning btn-block border border-dark btn-block text-left py-0 btn-lg"
-                                style="font-weight:bolder" id="labelAktifitas002" data-aktifitas="HAULER & SPOTTING">
-                                <input type="radio" name="aktifitas" id="aktifitias002" autocomplete="off" value="002"
-                                    onclick="setAktifitias(this.value)"> HAULER&nbsp;SPOTTING
-                            </label>
-                        </div>
-                        <div class="col-5 engineStarted">
+                        <div class="col-12 engineStarted">
                             <button class="btn btn-danger btn-block border border-dark py-1 btn-lg" onclick="doneWork()"
                                 style="font-weight:bolder">SELESAI&nbsp;KERJA</button>
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-success btn-block border border-dark py-1 btn-lg" id="btn-engine-control"
-                                style="font-weight:bolder">START ENGINE</button>
+                            <button class="btn btn-success btn-block border border-dark py-1 btn-lg" id="btn-engine-control" onclick="control_engine_big()"
+                                style="font-weight:bolder" type="button">START ENGINE</button>
                         </div>
                     </div>
                 </div>
