@@ -62,7 +62,7 @@ var app = {
         }
         document.addEventListener("offline", this.onOffline, false);
         document.addEventListener("online", this.onOnline, false);
-        document.getElementById("content-engine-control").addEventListener("click", controlEngine);
+        document.getElementById("content-engine-control").addEventListener("click", app.controlEngine, false);
         document.addEventListener("pause", onPause, false);
         document.addEventListener("resume", onResume, false);
         document.addEventListener("menubutton", onMenuKeyDown, false);
@@ -221,6 +221,7 @@ var app = {
             btnEngineControl.attr('onclick', 'doneWork()');
             console.log("status engine : " + statusEngine);
             $("#btn-engine-control").hide();
+            $(".btn-lg-start").hide();
             $(".engineStarted").show();
             $("#engineStatus").html('<p class="p-0 m-0 text-success">Engine On<i class="material-icons">flash_on</i></p>');
             if (secondsAct > 0 || minutesAct > 0 || hoursAct > 0) {
@@ -237,6 +238,7 @@ var app = {
             // ENGINE STATUS OFF
             $(".engineStarted").hide();
             $("#btn-engine-control").show();
+            $(".btn-lg-start").show();
 
             statusEngine = 0;
             storage.setItem('statusEngine', statusEngine);
@@ -252,7 +254,7 @@ var app = {
             clearTimeout(tAct); clearTimeout(tLoad); clearTimeout(ACCUMULATIVE_LOAD);
             clearTimeout(t);
             clearTimeout(tLoad);
-            clearTimeout(this.timer_status_engine_per_hour);
+            clearTimeout(app.timer_status_engine_per_hour);
             // if (secondsAct > 0 || minutesAct > 0 || hoursAct > 0) {
 
             // }
@@ -273,7 +275,7 @@ var app = {
 }
 
 function control_engine_big() {
-    app.controlEngine();
+    return app.controlEngine();
 }
 
 
