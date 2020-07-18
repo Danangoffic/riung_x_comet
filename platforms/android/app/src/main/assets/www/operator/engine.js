@@ -106,8 +106,17 @@ var app = {
         console.log(str_data_engine);
         if (dataEngine.data.length > 0 && app.status_try) {
             app.status_try = false;
-            $.post(url + "api/engine/create", dataEngine).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
-            localStorage.removeItem("dataEngine");
+            $.ajax(
+                {
+                    url: url + "api/engine/create",
+                    data: dataEngine,
+                    type: 'POST',
+                    success: onSuccessSubmitting,
+                    error: onFailSubmitting,
+                    always: onDoneSubmitting,
+                    timeout: 5000
+                }
+            );
         }
     },
     timer_status_engine_per_hour: 0,
@@ -373,7 +382,7 @@ function addACCUMULATIVELoading() {
 function onLoad() {
     app.init();
 }
-$(document).ready(app.onDeviceReady);
+// $(document).ready(app.onDeviceReady);
 
 function set_up_control_engine_1() {
     $(".engineStarted").hide();
@@ -720,9 +729,9 @@ function setAktifitias(e) {
         return false;
     }
     // aktivitas = e;
-    if (aktivitas !== null) {
-        submitting("Aktifitas", aktivitas);
-    }
+    // if (aktivitas !== null) {
+    // submitting("Aktifitas", aktivitas);
+    // }
     if (aktivitas == "001") {
         // muatanPerJam = 0;
         // timerLoading();
@@ -925,7 +934,7 @@ function loadActivity() {
             var allActivity = '';
             var lainnyaActivity = '';
             $.each(e, function (i, isi) {
-                if (i < 9) {
+                if (isi.tampil == "yes") {
                     allActivity += '<div class="col-4 m-0 custom-control custom-radio"><label for="aktifitias' + i + '" class="btn btn-light border border-dark btn-block text-left align-middle" style="font-size:14px !important; font-weight:bold;" data-aktifitas="' + isi.aktivitas + '" id="labelAktifitas' + isi.kode + '"><input type="radio" name="aktifitas" id="aktifitias' + i + '" autocomplete="off" value="' + isi.kode + '" onclick="setAktifitias(this.value)"> <br>' + isi.aktivitas + '</label></div>';
                 } else {
                     lainnyaActivity += '<div class="col-4 m-0 custom-control custom-radio"><label for="aktifitias' + i + '" class="btn btn-light border border-dark btn-block text-left align-middle" style="font-size:14px !important; font-weight:bold;" data-aktifitas="' + isi.aktivitas + '" id="labelAktifitas' + isi.kode + '"><input type="radio" name="aktifitas" id="aktifitias' + i + '" autocomplete="off" value="' + isi.kode + '" onclick="setAktifitias(this.value)"> <br>' + isi.aktivitas + '</label></div>';
@@ -1049,7 +1058,16 @@ function submitting(segmen, keterangan) {
 
     // check connection to submit data
     if (app.NetworkState() !== Connection.NONE) {
-        $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
+        $.ajax({
+            url: url + "api/engine/create",
+            type: "POST",
+            data: dataInsert,
+            timeout: 5000,
+            success: onSuccessSubmitting,
+            error: onFailSubmitting,
+            always: onDoneSubmitting
+        });
+        // $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
     } else {
         console.log("DATA STORED IN LOCAL");
     }
