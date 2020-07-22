@@ -1,5 +1,5 @@
-       var url = "http://app.riungmitra.co.id/monitoring/index.php/";
-// var url = "http://localhost/monitoring/index.php/";
+        var url = "http://app.riungmitra.co.id/monitoring/index.php/";
+//var url = "http://localhost/monitoring/index.php/";
 // var url = "http://192.168.1.8/monitoring/index.php/";
 var storage = window.localStorage;
 if(storage.getItem("statusLogin") == "" || storage.getItem("statusLogin") == null){

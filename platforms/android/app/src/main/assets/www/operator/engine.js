@@ -836,6 +836,7 @@ function setStatus(kode) {
 }
 
 function setMuatan(e) {
+    event.preventDefault();
     if (statusEngine == 0) {
         // alert("Engine Timer Belum Aktif");
         $("input[name=muatan]:radio:checked").prop("checked", false);
@@ -850,13 +851,15 @@ function setMuatan(e) {
     ritase_sekarang += 1;
     keterangan = e + "BCM";
 
-    var segmen = "Muatan";
+    var segmen = "";
     allProductivityHTML();
     app.setActualProductivity();
     localStorage.setItem("muatan", muatan);
     $("#ritase_sekarang").text(ritase_sekarang);
     // $("#acitivityProductivity").text(acitivityProductivity + "");
-    submitting(segmen, keterangan);
+    $("[name=aktifitas][value=044]").prop("checked", true);
+    setAktifitias('044');
+    // submitting(segmen, keterangan);
 
 }
 
