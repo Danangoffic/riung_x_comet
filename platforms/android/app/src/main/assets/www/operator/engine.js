@@ -25,7 +25,7 @@ var engineControl = $("#content-engine-control");
 var btnEngineControl = $("#btn-engine-control");
 // variabel untuk string timer
 var runningTimer = '00:00:00', actTimer = '00:00:00', statTimer = '00:00:00';
-var all_productivity_unit = 0, actual_productivity_unit = 0, effectivness = parseFloat(0), ritase_sebelum = 0, ritase_sekarang = 0;
+var all_productivity_unit = parseFloat(0).toFixed(2), actual_productivity_unit = 0, effectivness = parseFloat(0), ritase_sebelum = 0, ritase_sekarang = 0;
 var engineMinute = 0;
 var hitungPerJam = parseInt(0);
 var reset_ritase = '';
@@ -92,13 +92,13 @@ var app = {
         if (app.NetworkState() !== Connection.NONE) {
             console.log(!!localStorage.dataEngine);
             if (!!localStorage.dataEngine) {
-                app.tryUploadData();
+                app.send_data_on_online();
             }
         }
     },
     NetworkState: () => navigator.connection.type,
     status_try: true,
-    tryUploadData: function () {
+    send_data_on_online: function () {
         var str_data_engine = localStorage.dataEngine;
         var dataEngine = JSON.parse(str_data_engine);
         var str_local_storage = "Data Local Storage : ";
@@ -106,27 +106,30 @@ var app = {
         console.log(str_data_engine);
         if (dataEngine.data.length > 0 && app.status_try) {
             app.status_try = false;
-            $.ajax(
-                {
-                    url: url + "api/engine/create",
-                    data: dataEngine,
-                    type: 'POST',
-                    success: onSuccessSubmitting,
-                    error: onFailSubmitting,
-                    always: onDoneSubmitting,
-                    timeout: 5000
-                }
-            );
+            app.send_ajax_on_online(dataEngine)
         }
+    },
+    send_ajax_on_online: function (dataEngine) {
+        $.ajax(
+            {
+                url: url + "api/engine/create",
+                data: dataEngine,
+                type: 'POST',
+                success: onSuccessSubmitting,
+                error: onFailSubmitting,
+                always: onDoneSubmitting,
+                timeout: 5000
+            }
+        );
     },
     timer_status_engine_per_hour: 0,
     engine_minute_per_hour: 0,
     engine_second_per_hour: 0,
-    engine_per_hour: () => {
+    engine_per_hour: function () {
         app.timer_status_engine_per_hour = setTimeout(app.engine_per_hour_add, 1000);
     },
     engine_hour_per_hour: 0,
-    engine_per_hour_add: () => {
+    engine_per_hour_add: function () {
         app.engine_second_per_hour++;
         if (app.engine_second_per_hour >= 60) {
             app.engine_minute_per_hour++;
@@ -153,8 +156,12 @@ var app = {
         actual_productivity_unit = parseFloat(0);
         reset_ritase = '';
         app.on_time_reset_ritase = false;
-        app._actual_productivity_();
+        // CLEARING HOURLY ENGINE AND MUATAN PER JAM
+        clearTimeout(app.timer_status_engine_per_hour);
+        app.engine_hour_per_hour = 0, app.engine_minute_per_hour = 0, app.engine_second_per_hour = 0;
+        app.engine_per_hour();
         muatanPerJam = 0;
+        app._actual_productivity_();
     },
     setActualProductivity: () => app._actual_productivity_(),
     initialize_engine: function () {
@@ -178,7 +185,7 @@ var app = {
     },
     _all_productivity_: function () {
         var allPdty = parseFloat(0);
-        if (minutes != 0 && seconds != 0 && muatan > 0) {
+        if (muatan > 0) {
             var pembagi = (hours + ((minutes + 1) / 60));
             var allProd = parseFloat(muatan / pembagi);
             if (isFinite(allProd) || isNaN(allProd)) {
@@ -188,21 +195,23 @@ var app = {
             }
         }
         all_productivity_unit = allPdty.toFixed(2);
-        document.getElementById("all_productive").innerHTML = allPdty.toFixed(2);
+        document.getElementById("all_productive").innerHTML = all_productivity_unit;
     },
-    _actual_productivity_: () => {
+    _actual_productivity_: function () {
         var act_prod = parseFloat(0);
         var hourly_minute = app.engine_minute_per_hour;
         var hourly_second = app.engine_second_per_hour;
         // console.log("Actual Productivity : " + muatanPerJam);
-        if (hourly_minute != 0 && hourly_second != 0 && muatanPerJam > 0) {
+        if (muatanPerJam > 0) {
             var pembagi = ((hourly_minute + 1) / 60);
             act_prod = parseFloat(muatanPerJam / pembagi);
             actual_productivity_unit = act_prod;
+        } else {
+            actual_productivity_unit = parseFloat(0);
         }
-        document.getElementById("act_productive").innerHTML = act_prod.toFixed(2);
+        document.getElementById("act_productive").innerHTML = actual_productivity_unit.toFixed(2);
     },
-    _effectiveness_: () => {
+    _effectiveness_: function () {
         if (aktivitas == "001") {
             var engineTimer = (hours * 60) + (minutes);
             var actTimerNow = (hourLoad * 60) + (minuteLoad);
@@ -280,7 +289,9 @@ var app = {
         return (i < 10) ? "0" + i : i;
         // if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
         // return i;
-    }
+    },
+    recent_muatan: 0,
+    recent_aktifitas: ""
 }
 
 function control_engine_big() {
@@ -343,9 +354,6 @@ function addLoading() {
         if (minuteLoad >= 60) {
             minuteLoad = 0;
             hourLoad++;
-            clearTimeout(app.timer_status_engine_per_hour);
-            app.engine_minute_per_hour = 0, app.engine_second_per_hour = 0;
-            app.engine_per_hour();
         }
     }
     loadTimer = (hourLoad ? (hourLoad > 9 ? hourLoad : "0" + hourLoad) : "00") + ":" + (minuteLoad ? (minuteLoad > 9 ? minuteLoad : "0" + minuteLoad) : "00") + ":" + (secondLoad > 9 ? secondLoad : "0" + secondLoad);
@@ -728,19 +736,12 @@ function setAktifitias(e) {
         engineNotStart();
         return false;
     }
-    // aktivitas = e;
-    // if (aktivitas !== null) {
-    // submitting("Aktifitas", aktivitas);
-    // }
-    if (aktivitas == "001") {
-        // muatanPerJam = 0;
-        // timerLoading();
-    } else {
-        // clearTimeout(tLoad);
-    }
-    keterangan = $("#labelAktifitas" + e).data("aktifitas");
+    var segmen = (e == "044") ? "Muatan" : "Aktifitas";
+    $("#activity-now").html("<b>" + $("#labelAktifitas" + e).data("aktifitas") + "</b>");
+    keterangan = (e !== "044") ? $("#labelAktifitas" + e).data("aktifitas") : app.recent_muatan + "BCM";
     if (aktivitas !== e) {
         aktivitas = e;
+
         if (aktivitas == "001") {
             timerLoading();
             ACCUMULATIVELoading()
@@ -749,15 +750,18 @@ function setAktifitias(e) {
             clearTimeout(ACCUMULATIVE_LOAD);
         }
     }
-    var segmen = "Aktifitas";
     submitting(segmen, keterangan);
-    secondsAct = 0, minutesAct = 0, hoursAct = 0, tAct;
+    
     // console.log(hoursAct + ":" + minutesAct + ":" + secondsAct);
-    clearTimeout(tAct);
-    timerActivity();
-
-    $("#activity-now").html("<b>" + keterangan + "</b>");
-
+    console.log("e => " + e);
+    console.log("recent_aktifitas => " + app.recent_aktifitas);
+    console.log("(e != app.recent_aktifitas) => " + (e != app.recent_aktifitas));
+    if (e != app.recent_aktifitas) {
+        secondsAct = 0, minutesAct = 0, hoursAct = 0, tAct;
+        clearTimeout(tAct);
+        timerActivity();
+    }
+    app.recent_aktifitas = aktivitas;
 
 }
 
@@ -844,14 +848,14 @@ function setMuatan(e) {
         engineNotStart();
         return false;
     }
-    keterangan = e;
+    app.recent_muatan = e;
     console.log("Muatan : " + e);
     muatan += parseInt(e);
     muatanPerJam += parseInt(e);
     ritase_sekarang += 1;
     keterangan = e + "BCM";
 
-    var segmen = "";
+    var segmen = "Muatan";
     allProductivityHTML();
     app.setActualProductivity();
     localStorage.setItem("muatan", muatan);
@@ -1009,13 +1013,11 @@ function submitting(segmen, keterangan) {
     // check segmen to send if it's reset ritase
     if (segmen == "Reset Ritase") {
         reset_ritase = segmen;
-        segmen = (localStorage.segmen == "Muatan") ? "Aktifitas" : localStorage.segmen;
-        keterangan = (localStorage.keterangan == "11BCM" || localStorage.keterangan == "12BCM" || localStorage.keterangan == "14BCM") ? "LOADING" : localStorage.keterangan;
+        segmen = localStorage.segmen;
+        keterangan = localStorage.keterangan;
 
         // reset hourly engine
-        clearTimeout(app.timer_status_engine_per_hour);
-        app.engine_hour_per_hour = 0, app.engine_minute_per_hour = 0, app.engine_second_per_hour = 0;
-        app.engine_per_hour();
+        
     }
     localStorage.setItem("segmen", segmen);
     localStorage.setItem("keterangan", keterangan);
@@ -1107,20 +1109,6 @@ function resetRitase() {
     reset_ritase = '';
 }
 
-function checkConnection() {
-    var networkState = navigator.connection.type;
-
-    var states = {};
-    states[Connection.UNKNOWN] = 'Unknown connection';
-    states[Connection.ETHERNET] = 'Ethernet connection';
-    states[Connection.WIFI] = 'WiFi connection';
-    states[Connection.CELL_2G] = 'Cell 2G connection';
-    states[Connection.CELL_3G] = 'Cell 3G connection';
-    states[Connection.CELL_4G] = 'Cell 4G connection';
-    states[Connection.CELL] = 'Cell generic connection';
-    states[Connection.NONE] = 'No network connection';
-    return states[networkState];
-}
 
 function alertDismissed() {
     // do something
