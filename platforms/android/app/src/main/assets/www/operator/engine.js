@@ -25,7 +25,7 @@ var engineControl = $("#content-engine-control");
 var btnEngineControl = $("#btn-engine-control");
 // variabel untuk string timer
 var runningTimer = '00:00:00', actTimer = '00:00:00', statTimer = '00:00:00';
-var all_productivity_unit = 0, actual_productivity_unit = 0, effectivness = parseFloat(0), ritase_sebelum = 0, ritase_sekarang = 0;
+var all_productivity_unit = parseFloat(0).toFixed(2), actual_productivity_unit = 0, effectivness = parseFloat(0), ritase_sebelum = 0, ritase_sekarang = 0;
 var engineMinute = 0;
 var hitungPerJam = parseInt(0);
 var reset_ritase = '';
@@ -62,18 +62,20 @@ var app = {
         }
         document.addEventListener("offline", this.onOffline, false);
         document.addEventListener("online", this.onOnline, false);
-        document.getElementById("content-engine-control").addEventListener("click", controlEngine);
+        document.getElementById("content-engine-control").addEventListener("click", app.controlEngine, false);
         document.addEventListener("pause", onPause, false);
         document.addEventListener("resume", onResume, false);
         document.addEventListener("menubutton", onMenuKeyDown, false);
         document.addEventListener("backbutton", onBackKeyDown, false);
-        document.getElementById("btn-engine-control").addEventListener("click", this.controlEngine, false);
+        // document.getElementById("").addEventListener("click", this.controlEngine, false);
+        $("#btn-engine-control").click(this.controlEngine);
+        // document.getElementById("btn-engine-control-big").addEventListener("click", this.controlEngine, false);
         document.getElementById("selesai-kerja").addEventListener("click", FinalDone, false);
 
         // call everything first
         app.start_everyting_first_here();
     },
-    start_everyting_first_here: function(){
+    start_everyting_first_here: function () {
         app.startTime();
         app.loadMaterial();
         app.loadActivity();
@@ -90,36 +92,51 @@ var app = {
         if (app.NetworkState() !== Connection.NONE) {
             console.log(!!localStorage.dataEngine);
             if (!!localStorage.dataEngine) {
-                app.tryUploadData();
+                app.send_data_on_online();
             }
         }
     },
     NetworkState: () => navigator.connection.type,
-    tryUploadData: function () {
+    status_try: true,
+    send_data_on_online: function () {
         var str_data_engine = localStorage.dataEngine;
         var dataEngine = JSON.parse(str_data_engine);
         var str_local_storage = "Data Local Storage : ";
         console.log(str_local_storage);
         console.log(str_data_engine);
-        if (dataEngine.data.length > 0) {
-            $.post(url + "api/engine/create", dataEngine).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
-            localStorage.removeItem("dataEngine");
+        if (dataEngine.data.length > 0 && app.status_try) {
+            app.status_try = false;
+            app.send_ajax_on_online(dataEngine)
         }
+    },
+    send_ajax_on_online: function (dataEngine) {
+        $.ajax(
+            {
+                url: url + "api/engine/create",
+                data: dataEngine,
+                type: 'POST',
+                success: onSuccessSubmitting,
+                error: onFailSubmitting,
+                always: onDoneSubmitting,
+                timeout: 5000
+            }
+        );
     },
     timer_status_engine_per_hour: 0,
     engine_minute_per_hour: 0,
     engine_second_per_hour: 0,
-    engine_per_hour: () => {
+    engine_per_hour: function () {
         app.timer_status_engine_per_hour = setTimeout(app.engine_per_hour_add, 1000);
     },
     engine_hour_per_hour: 0,
-    engine_per_hour_add: () => {
+    engine_per_hour_add: function () {
         app.engine_second_per_hour++;
         if (app.engine_second_per_hour >= 60) {
             app.engine_minute_per_hour++;
+            app.engine_second_per_hour = 0;
             if (app.engine_minute_per_hour >= 60) {
+                app.engine_hour_per_hour++;
                 app.engine_minute_per_hour = 0;
-                app.engine_hour_per_hour += 1;
             }
         }
         app.engine_per_hour();
@@ -139,8 +156,12 @@ var app = {
         actual_productivity_unit = parseFloat(0);
         reset_ritase = '';
         app.on_time_reset_ritase = false;
-        app._actual_productivity_();
+        // CLEARING HOURLY ENGINE AND MUATAN PER JAM
+        clearTimeout(app.timer_status_engine_per_hour);
+        app.engine_hour_per_hour = 0, app.engine_minute_per_hour = 0, app.engine_second_per_hour = 0;
+        app.engine_per_hour();
         muatanPerJam = 0;
+        app._actual_productivity_();
     },
     setActualProductivity: () => app._actual_productivity_(),
     initialize_engine: function () {
@@ -164,7 +185,7 @@ var app = {
     },
     _all_productivity_: function () {
         var allPdty = parseFloat(0);
-        if (minutes != 0 && seconds != 0 && muatan > 0) {
+        if (muatan > 0) {
             var pembagi = (hours + ((minutes + 1) / 60));
             var allProd = parseFloat(muatan / pembagi);
             if (isFinite(allProd) || isNaN(allProd)) {
@@ -174,19 +195,23 @@ var app = {
             }
         }
         all_productivity_unit = allPdty.toFixed(2);
-        document.getElementById("all_productive").innerHTML = allPdty.toFixed(2);
+        document.getElementById("all_productive").innerHTML = all_productivity_unit;
     },
-    _actual_productivity_: () => {
+    _actual_productivity_: function () {
         var act_prod = parseFloat(0);
+        var hourly_minute = app.engine_minute_per_hour;
+        var hourly_second = app.engine_second_per_hour;
         // console.log("Actual Productivity : " + muatanPerJam);
-        if (minutes != 0 && seconds != 0 && muatanPerJam > 0) {
-            var pembagi = ((minutes + 1) / 60);
+        if (muatanPerJam > 0) {
+            var pembagi = ((hourly_minute + 1) / 60);
             act_prod = parseFloat(muatanPerJam / pembagi);
             actual_productivity_unit = act_prod;
+        } else {
+            actual_productivity_unit = parseFloat(0);
         }
-        document.getElementById("act_productive").innerHTML = act_prod.toFixed(2);
+        document.getElementById("act_productive").innerHTML = actual_productivity_unit.toFixed(2);
     },
-    _effectiveness_: () => {
+    _effectiveness_: function () {
         if (aktivitas == "001") {
             var engineTimer = (hours * 60) + (minutes);
             var actTimerNow = (hourLoad * 60) + (minuteLoad);
@@ -201,7 +226,9 @@ var app = {
     check_engine_lipat: () => check_engine_lipat(),
     controlEngine: function () {
         if (statusEngine == 0) {
+            // ENGNIE STATUS ON
             timer();
+            app.engine_per_hour();
             statusEngine = 1;
             storage.setItem('statusEngine', statusEngine);
             engineControl.html('Engine&nbsp;' + iconStop);
@@ -212,6 +239,7 @@ var app = {
             btnEngineControl.attr('onclick', 'doneWork()');
             console.log("status engine : " + statusEngine);
             $("#btn-engine-control").hide();
+            $(".btn-lg-start").hide();
             $(".engineStarted").show();
             $("#engineStatus").html('<p class="p-0 m-0 text-success">Engine On<i class="material-icons">flash_on</i></p>');
             if (secondsAct > 0 || minutesAct > 0 || hoursAct > 0) {
@@ -225,8 +253,10 @@ var app = {
             keterangan = "Engine On";
             submitting(segmen, keterangan);
         } else {
+            // ENGINE STATUS OFF
             $(".engineStarted").hide();
             $("#btn-engine-control").show();
+            $(".btn-lg-start").show();
 
             statusEngine = 0;
             storage.setItem('statusEngine', statusEngine);
@@ -242,6 +272,7 @@ var app = {
             clearTimeout(tAct); clearTimeout(tLoad); clearTimeout(ACCUMULATIVE_LOAD);
             clearTimeout(t);
             clearTimeout(tLoad);
+            clearTimeout(app.timer_status_engine_per_hour);
             // if (secondsAct > 0 || minutesAct > 0 || hoursAct > 0) {
 
             // }
@@ -258,7 +289,13 @@ var app = {
         return (i < 10) ? "0" + i : i;
         // if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
         // return i;
-    }
+    },
+    recent_muatan: 0,
+    recent_aktifitas: ""
+}
+
+function control_engine_big() {
+    return app.controlEngine();
 }
 
 
@@ -291,7 +328,7 @@ function startTime() {
         if (aktivitas == "001") {
             ACCUMULATIVELoading();
         }
-        // CLEAR ACCUMULATIVE LOADING TIMER
+        // CLEAR ACCUMULATIVE LOADING TIMER AND ENGINE HOURLY
 
         t2 = setTimeout(startTime, 1000);
     }
@@ -317,9 +354,6 @@ function addLoading() {
         if (minuteLoad >= 60) {
             minuteLoad = 0;
             hourLoad++;
-            clearTimeout(app.timer_status_engine_per_hour);
-            app.engine_minute_per_hour = 0, app.engine_second_per_hour = 0;
-            app.engine_per_hour();
         }
     }
     loadTimer = (hourLoad ? (hourLoad > 9 ? hourLoad : "0" + hourLoad) : "00") + ":" + (minuteLoad ? (minuteLoad > 9 ? minuteLoad : "0" + minuteLoad) : "00") + ":" + (secondLoad > 9 ? secondLoad : "0" + secondLoad);
@@ -356,7 +390,7 @@ function addACCUMULATIVELoading() {
 function onLoad() {
     app.init();
 }
-$(document).ready(app.onDeviceReady);
+// $(document).ready(app.onDeviceReady);
 
 function set_up_control_engine_1() {
     $(".engineStarted").hide();
@@ -575,18 +609,20 @@ function doneWork() {
 function FinalDone() {
     if ($("[name=hm]").val != "") {
         statusEngine = 0;
-        clearTimeout(t);
-        var segmen = "Selesai Kerja";
-        submitting(segmen, segmen);
-        var id = operator_start.id;
+
+        let id = operator_start.id;
+        let data_ajax = {id:id, hm: $("[name=hm]").val()};
         $.ajax({
             url: url + "Operator/updateActivityHMAkhir",
             type: 'POST',
-            data: { id: id, hm: $("[name=hm]").val() },
+            data: data_ajax,
             dataType: "JSON",
-            async: false,
             success: function (e) {
                 if (e.response == "success") {
+                    let segmen = "Selesai Kerja";
+                    submitting(segmen, segmen);
+                    clearTimeout(t);
+                    clearTimeout(app.timer_status_engine_per_hour);
                     clearTimeout(tAct);
                     secondsAct = 0, minutesAct = 0, hoursAct = 0, tAct;
                     clearTimeout(tStatus);
@@ -701,19 +737,12 @@ function setAktifitias(e) {
         engineNotStart();
         return false;
     }
-    // aktivitas = e;
-    if (aktivitas !== null) {
-        submitting("Aktifitas", aktivitas);
-    }
-    if (aktivitas == "001") {
-        // muatanPerJam = 0;
-        // timerLoading();
-    } else {
-        // clearTimeout(tLoad);
-    }
-    keterangan = $("#labelAktifitas" + e).data("aktifitas");
+    var segmen = (e == "044") ? "Muatan" : "Aktifitas";
+    $("#activity-now").html("<b>" + $("#labelAktifitas" + e).data("aktifitas") + "</b>");
+    keterangan = (e !== "044") ? $("#labelAktifitas" + e).data("aktifitas") : app.recent_muatan + "BCM";
     if (aktivitas !== e) {
         aktivitas = e;
+
         if (aktivitas == "001") {
             timerLoading();
             ACCUMULATIVELoading()
@@ -722,15 +751,18 @@ function setAktifitias(e) {
             clearTimeout(ACCUMULATIVE_LOAD);
         }
     }
-    var segmen = "Aktifitas";
     submitting(segmen, keterangan);
-    secondsAct = 0, minutesAct = 0, hoursAct = 0, tAct;
+    
     // console.log(hoursAct + ":" + minutesAct + ":" + secondsAct);
-    clearTimeout(tAct);
-    timerActivity();
-
-    $("#activity-now").html("<b>" + keterangan + "</b>");
-
+    console.log("e => " + e);
+    console.log("recent_aktifitas => " + app.recent_aktifitas);
+    console.log("(e != app.recent_aktifitas) => " + (e != app.recent_aktifitas));
+    if (e != app.recent_aktifitas) {
+        secondsAct = 0, minutesAct = 0, hoursAct = 0, tAct;
+        clearTimeout(tAct);
+        timerActivity();
+    }
+    app.recent_aktifitas = aktivitas;
 
 }
 
@@ -809,6 +841,7 @@ function setStatus(kode) {
 }
 
 function setMuatan(e) {
+    event.preventDefault();
     if (statusEngine == 0) {
         // alert("Engine Timer Belum Aktif");
         $("input[name=muatan]:radio:checked").prop("checked", false);
@@ -816,7 +849,7 @@ function setMuatan(e) {
         engineNotStart();
         return false;
     }
-    keterangan = e;
+    app.recent_muatan = e;
     console.log("Muatan : " + e);
     muatan += parseInt(e);
     muatanPerJam += parseInt(e);
@@ -829,7 +862,9 @@ function setMuatan(e) {
     localStorage.setItem("muatan", muatan);
     $("#ritase_sekarang").text(ritase_sekarang);
     // $("#acitivityProductivity").text(acitivityProductivity + "");
-    submitting(segmen, keterangan);
+    $("[name=aktifitas][value=044]").prop("checked", true);
+    setAktifitias('044');
+    // submitting(segmen, keterangan);
 
 }
 
@@ -907,7 +942,7 @@ function loadActivity() {
             var allActivity = '';
             var lainnyaActivity = '';
             $.each(e, function (i, isi) {
-                if (i < 9) {
+                if (isi.tampil == "yes") {
                     allActivity += '<div class="col-4 m-0 custom-control custom-radio"><label for="aktifitias' + i + '" class="btn btn-light border border-dark btn-block text-left align-middle" style="font-size:14px !important; font-weight:bold;" data-aktifitas="' + isi.aktivitas + '" id="labelAktifitas' + isi.kode + '"><input type="radio" name="aktifitas" id="aktifitias' + i + '" autocomplete="off" value="' + isi.kode + '" onclick="setAktifitias(this.value)"> <br>' + isi.aktivitas + '</label></div>';
                 } else {
                     lainnyaActivity += '<div class="col-4 m-0 custom-control custom-radio"><label for="aktifitias' + i + '" class="btn btn-light border border-dark btn-block text-left align-middle" style="font-size:14px !important; font-weight:bold;" data-aktifitas="' + isi.aktivitas + '" id="labelAktifitas' + isi.kode + '"><input type="radio" name="aktifitas" id="aktifitias' + i + '" autocomplete="off" value="' + isi.kode + '" onclick="setAktifitias(this.value)"> <br>' + isi.aktivitas + '</label></div>';
@@ -979,8 +1014,9 @@ function submitting(segmen, keterangan) {
     // check segmen to send if it's reset ritase
     if (segmen == "Reset Ritase") {
         reset_ritase = segmen;
-        segmen = (localStorage.segmen == "Muatan") ? "Aktifitas" : localStorage.segmen;
-        keterangan = (localStorage.keterangan == "11BCM" || localStorage.keterangan == "12BCM" || localStorage.keterangan == "14BCM") ? "LOADING" : localStorage.keterangan;
+        segmen = localStorage.segmen;
+        keterangan = localStorage.keterangan;
+        // reset hourly engine
     }
     localStorage.setItem("segmen", segmen);
     localStorage.setItem("keterangan", keterangan);
@@ -1011,22 +1047,31 @@ function submitting(segmen, keterangan) {
         ACCUMULATIVETIMERPERHOUR: ACCUMULATIVETIMER
     };
     if (!localStorage.dataEngine) {
-        var dataArray = { data: [] };
+        let dataArray = { data: [] };
         dataArray.data.push(dataInsert);
-        var dataString = JSON.stringify(dataArray);
+        let dataString = JSON.stringify(dataArray);
         localStorage.setItem("dataEngine", dataString);
     } else {
-        var dataArray = JSON.parse(localStorage.dataEngine);
+        let dataArray = JSON.parse(localStorage.dataEngine);
         dataArray.data.push(dataInsert);
-        var dataString = JSON.stringify(dataArray);
+        let dataString = JSON.stringify(dataArray);
         localStorage.setItem("dataEngine", dataString);
     }
-    var dataEngineStorage = JSON.parse(localStorage.dataEngine);
+    let dataEngineStorage = JSON.parse(localStorage.dataEngine);
     dataInsert = dataEngineStorage;
 
     // check connection to submit data
     if (app.NetworkState() !== Connection.NONE) {
-        $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
+        $.ajax({
+            url: url + "api/engine/create",
+            type: "POST",
+            data: dataInsert,
+            timeout: 5000,
+            success: onSuccessSubmitting,
+            error: onFailSubmitting,
+            always: onDoneSubmitting
+        });
+        // $.post(url + "api/engine/create", dataInsert).then(onSuccessSubmitting).done(onDoneSubmitting).fail(onFailSubmitting);
     } else {
         console.log("DATA STORED IN LOCAL");
     }
@@ -1037,6 +1082,7 @@ function submitting(segmen, keterangan) {
 }
 
 function onSuccessSubmitting(e, status) {
+    app.status_try = true;
     console.log("SUKSES UPLOAD DATA");
     localStorage.removeItem("dataEngine");
     $("#myModal").modal("hide");
@@ -1062,20 +1108,6 @@ function resetRitase() {
     reset_ritase = '';
 }
 
-function checkConnection() {
-    var networkState = navigator.connection.type;
-
-    var states = {};
-    states[Connection.UNKNOWN] = 'Unknown connection';
-    states[Connection.ETHERNET] = 'Ethernet connection';
-    states[Connection.WIFI] = 'WiFi connection';
-    states[Connection.CELL_2G] = 'Cell 2G connection';
-    states[Connection.CELL_3G] = 'Cell 3G connection';
-    states[Connection.CELL_4G] = 'Cell 4G connection';
-    states[Connection.CELL] = 'Cell generic connection';
-    states[Connection.NONE] = 'No network connection';
-    return states[networkState];
-}
 
 function alertDismissed() {
     // do something
