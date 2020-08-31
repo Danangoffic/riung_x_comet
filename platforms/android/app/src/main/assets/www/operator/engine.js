@@ -610,16 +610,17 @@ function FinalDone() {
     if ($("[name=hm]").val != "") {
         statusEngine = 0;
 
-        var segmen = "Selesai Kerja";
-        submitting(segmen, segmen);
-        var id = operator_start.id;
+        let id = operator_start.id;
+        let data_ajax = {id:id, hm: $("[name=hm]").val()};
         $.ajax({
             url: url + "Operator/updateActivityHMAkhir",
             type: 'POST',
-            data: { id: id, hm: $("[name=hm]").val() },
+            data: data_ajax,
             dataType: "JSON",
             success: function (e) {
                 if (e.response == "success") {
+                    let segmen = "Selesai Kerja";
+                    submitting(segmen, segmen);
                     clearTimeout(t);
                     clearTimeout(app.timer_status_engine_per_hour);
                     clearTimeout(tAct);
@@ -1015,9 +1016,7 @@ function submitting(segmen, keterangan) {
         reset_ritase = segmen;
         segmen = localStorage.segmen;
         keterangan = localStorage.keterangan;
-
         // reset hourly engine
-        
     }
     localStorage.setItem("segmen", segmen);
     localStorage.setItem("keterangan", keterangan);
@@ -1048,17 +1047,17 @@ function submitting(segmen, keterangan) {
         ACCUMULATIVETIMERPERHOUR: ACCUMULATIVETIMER
     };
     if (!localStorage.dataEngine) {
-        var dataArray = { data: [] };
+        let dataArray = { data: [] };
         dataArray.data.push(dataInsert);
-        var dataString = JSON.stringify(dataArray);
+        let dataString = JSON.stringify(dataArray);
         localStorage.setItem("dataEngine", dataString);
     } else {
-        var dataArray = JSON.parse(localStorage.dataEngine);
+        let dataArray = JSON.parse(localStorage.dataEngine);
         dataArray.data.push(dataInsert);
-        var dataString = JSON.stringify(dataArray);
+        let dataString = JSON.stringify(dataArray);
         localStorage.setItem("dataEngine", dataString);
     }
-    var dataEngineStorage = JSON.parse(localStorage.dataEngine);
+    let dataEngineStorage = JSON.parse(localStorage.dataEngine);
     dataInsert = dataEngineStorage;
 
     // check connection to submit data
